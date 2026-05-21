@@ -131,31 +131,32 @@ Angular Frontend  →  FastAPI Backend  →  PostgreSQL Datenbank
 
 ## 8. Datenkatalog
 
-| Tabelle    | Zweck                                                  |
-|------------|--------------------------------------------------------|
-| books      | Speicherung der Buchinformationen                      |
-| embeddings | Speicherung der Buchvektoren für die semantische Suche |
+| Tabelle      | Zweck                                                  |
+|---------------|--------------------------------------------------------|
+| authors       | Speicherung der Autorinnen und Autoren                 |
+| books         | Speicherung der Buchinformationen                      |
+| book_authors  | Zuordnung zwischen Büchern und Autoren                 |
+| embeddings    | Speicherung der Buchvektoren für die semantische Suche |
 
 ### Felder
 
-| Tabelle    | Felder                                                                                                                                                                 |
-|------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| books      | id, title, author, year, description, language, cover_image_url, isbn, publisher, classification, pages, annotation, signature_line1, signature_line2, signature_color |
-| embeddings | id, book_id, vector                                                                                                                                                    |
+| Tabelle      | Felder                                                                      |
+|--------------|-----------------------------------------------------------------------------|
+| authors      | id, name                                                                    |
+| books        | id, title, description, year, publisher, pages, language, cover_url, isbn13 |
+| book_authors | book_id, author_id                                                          |
+| embeddings   | id, book_id, vector, embedding_type, model_name                             |
 
 ---
 
 ## 9. ERD
 
-Das Entity-Relationship-Diagramm beschreibt die Beziehungen zwischen den wichtigsten Daten.
-
-```text
-books 1 ─── 1 embeddings
-```
+![ED.png](assets/ERD.png)
 
 ### Beschreibung
 
-Ein Buch besitzt einen zugehörigen Vektor für die semantische Suche.
+Ein Buch kann mehrere Autorinnen oder Autoren besitzen. Zusätzlich besitzt jedes Buch einen zugehörigen Embedding-Vektor
+für die semantische Suche.
 
 ---
 
