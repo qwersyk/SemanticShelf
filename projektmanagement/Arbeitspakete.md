@@ -11,6 +11,6 @@
 | AP7  | Entwicklung der Frontend-Grundstruktur und Services | Yehor          | 30.05-4.06  | Frontend kann mit dem Backend kommunizieren | M3        |
 | AP8  | Implementierung der Suchfunktion und Buchansicht    | Heorhii        | 30.05-4.06  | Suche und Buchseite funktionieren           | M4        |
 | AP9  | Implementierung des Empfehlungssystems („For you“)  | Heorhii        | 30.05-4.06  | Empfehlungen werden korrekt angezeigt       | M4        |
-| AP10 | Implementierung optionaler Genre-Funktion           | Heorhii        | 04.05-6.06  | Genre-Funktion funktioniert korrekt         | M5        |
+| AP10 | Implementierung optionaler Genre-Funktion           | Heorhii        | 04.06-6.06  | Genre-Funktion funktioniert korrekt         | M5        |
 | AP11 | Tests, Fehlerbehebung und Finalisierung (Backend)   | Yehor          | 06.06-11.06 | Anwendung wurde getestet und dokumentiert   | M5        |
 | AP12 | Tests, Fehlerbehebung und Finalisierung (Frontend)  | Heorhii        | 06.06-11.06 | Anwendung wurde getestet und dokumentiert   | M5        |
