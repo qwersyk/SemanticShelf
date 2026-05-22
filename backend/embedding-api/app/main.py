@@ -26,23 +26,35 @@ async def health():
 @app.get("/model")
 async def model_info(x_api_key: str = Header(...)):
     if x_api_key != API_KEY:
-        raise HTTPException(401)
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid API key"
+        )
 
     return {
         "model": MODEL_NAME,
-        "dimensions": model.get_sentence_embedding_dimension()
+        "dimensions": model.get_embedding_dimension()
     }
 
 
 @app.post("/embed")
 async def embed(request: EmbedRequest, x_api_key: str = Header(...)):
     if x_api_key != API_KEY:
-        raise HTTPException(401)
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid API key"
+        )
+
+    if not request.texts:
+        raise HTTPException(
+            status_code=400,
+            detail="texts list cannot be empty"
+        )
 
     vectors = model.encode(request.texts, normalize_embeddings=True).tolist()
 
     return {
         "model": MODEL_NAME,
-        "dimensions": model.get_sentence_embedding_dimension(),
+        "dimensions": model.get_embedding_dimension(),
         "vectors": vectors
     }

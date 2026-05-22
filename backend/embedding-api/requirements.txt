@@ -2,3 +2,6 @@ fastapi
 uvicorn[standard]
 sentence-transformers
 torch
+
+pytest
+httpx
