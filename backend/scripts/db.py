@@ -1,0 +1,106 @@
+from sqlalchemy import create_engine, text
+
+DATABASE_URL = "postgresql+psycopg2://admin:admin123@localhost:5433/books_db"
+engine = create_engine(DATABASE_URL)
+
+
+def find_autor_by_name(name):
+    with engine.connect() as connection:
+        result = connection.execute(text("""SELECT *
+                                            FROM author
+                                            WHERE name = :name"""), {"name": name})
+        return result.scalar()
+
+
+def delete_authors_by_name(name):
+    with engine.begin() as connection:
+        result = connection.execute(
+            text("""
+                 DELETE
+                 FROM author
+                 WHERE name = :name
+                 """),
+            {"name": name}
+        )
+        return result.rowcount
+
+
+def add_autor(name):
+    id = find_autor_by_name(name)
+    if id:
+        return id
+    with engine.begin() as connection:
+        result = connection.execute(text("""INSERT INTO author(name)
+                                            VALUES (:name) RETURNING id, name"""), {"name": name})
+        return result.scalar()
+
+
+def link_authors(book_id, authors_names):
+    if authors_names is None:
+        return;
+    authors_id = []
+    for name in authors_names:
+        authors_id.append(add_autor(name))
+    with engine.begin() as connection:
+        for a in authors_id:
+            result = connection.execute(text("""INSERT INTO book_author(author_id, book_id)
+                                                VALUES (:author_id, :book_id)
+                                                    ON CONFLICT (book_id, author_id) DO NOTHING
+                                             RETURNING *"""), {"author_id": a, "book_id": book_id})
+        return result.fetchone()
+
+
+def find_books_by_id(id):
+    with engine.connect() as connection:
+        result = connection.execute(text("""SELECT *
+                                            FROM book
+                                            WHERE id = :id"""), {"id": id})
+        return result.scalar()
+
+
+def add_book(id, title, isbn13, year, language, pages, publisher, description, coverurl):
+    params = {
+        "id": id,
+        "title": title,
+        "isbn13": isbn13,
+        "year": year,
+        "language": language,
+        "pages": pages,
+        "publisher": publisher,
+        "description": description,
+        "coverurl": coverurl
+    }
+
+    if find_books_by_id(id):
+        with engine.begin() as connection:
+            result = connection.execute(
+                text("""
+                    UPDATE book
+                    SET
+                        title = COALESCE(:title, title),
+                        isbn13 = COALESCE(:isbn13, isbn13),
+                        year = COALESCE(:year, year),
+                        language = COALESCE(:language, language),
+                        pages = COALESCE(:pages, pages),
+                        publisher = COALESCE(:publisher, publisher),
+                        description = COALESCE(:description, description),
+                        cover_url = COALESCE(:coverurl, cover_url)
+                    WHERE id = :id
+                    RETURNING *
+                """),
+                params
+            )
+
+            return result.fetchone()
+
+    with engine.begin() as connection:
+        result = connection.execute(
+            text("""
+                INSERT INTO book(id, title, isbn13, year, language, pages, publisher, description, cover_url)
+                VALUES (:id, :title, :isbn13, :year, :language, :pages, :publisher, :description, :coverurl)
+                RETURNING *
+            """),
+            params
+        )
+
+        return result.fetchone()
