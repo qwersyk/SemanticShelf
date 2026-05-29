@@ -2,7 +2,7 @@ import argparse
 
 import requests
 
-from db import add_embeddings, find_author_names_by_book_id, find_books_without_embedding
+from db import add_embeddings, find_author_names_for_books, find_books_without_embedding
 from settings import EMBEDDING_API_KEY, EMBEDDING_API_URL
 
 EMBEDDING_TYPE = "title_author"
@@ -19,13 +19,14 @@ def build_embedding_text(title, authors):
 
 
 def add_authors_to_books(books):
+    book_ids = [book["id"] for book in books]
+    authors_map = find_author_names_for_books(book_ids)
     books_with_authors = []
     for book in books:
-        authors = find_author_names_by_book_id(book["id"])
         books_with_authors.append({
             "id": book["id"],
             "title": book["title"],
-            "authors": "; ".join(authors),
+            "authors": "; ".join(authors_map.get(book["id"], [])),
         })
     return books_with_authors
 

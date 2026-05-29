@@ -13,9 +13,9 @@ CREATE TABLE IF NOT EXISTS semanticshelf.book
     id          BIGSERIAL PRIMARY KEY,
     title       TEXT NOT NULL,
     description TEXT,
-    isbn13      VARCHAR(13) UNIQUE,
+    isbn13      VARCHAR(13),
     year        INTEGER,
-    language    VARCHAR(10),
+    language    TYPE TEXT,
     publisher   TEXT,
     pages       INTEGER,
     cover_url   TEXT

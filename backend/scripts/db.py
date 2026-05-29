@@ -141,19 +141,29 @@ def find_books_without_embedding(embedding_type, start_id, end_id):
         return result.mappings().all()
 
 
-def find_author_names_by_book_id(book_id):
+def find_author_names_for_books(book_ids):
+    if not book_ids:
+        return {}
+
     with engine.connect() as connection:
         result = connection.execute(
             text("""
-                 SELECT author.name
+                 SELECT book_author.book_id,
+                        author.name
                  FROM author
-                 JOIN book_author ON book_author.author_id = author.id
-                 WHERE book_author.book_id = :book_id
-                 ORDER BY author.name
+                          JOIN book_author ON book_author.author_id = author.id
+                 WHERE book_author.book_id = ANY (:book_ids)
+                 ORDER BY book_author.book_id, author.name
                  """),
-            {"book_id": book_id}
+            {"book_ids": book_ids}
         )
-        return [row[0] for row in result]
+
+        authors_map = {}
+
+        for book_id, author_name in result:
+            authors_map.setdefault(book_id, []).append(author_name)
+
+        return authors_map
 
 
 def add_embeddings(rows, embedding_type, model_name, vectors):

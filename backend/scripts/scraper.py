@@ -1,7 +1,7 @@
 import argparse
 import time
 from threading import Thread
-
+import re
 import requests
 from bs4 import BeautifulSoup
 
@@ -28,9 +28,6 @@ def find_row(label, soup):
     except AttributeError:
         return None
 
-def only_digits(value):
-    return "".join(d for d in value if d.isdigit()) if value else None
-
 
 def parse_authors(value):
     if not value:
@@ -38,6 +35,33 @@ def parse_authors(value):
 
     authors = [author.strip() for author in value.split(";") if author.strip()]
     return authors or None
+
+def parse_year(value):
+    if not value:
+        return None
+
+    match = re.search(r"\d{4}", value)
+    return int(match.group()) if match else None
+
+def normalize_pages(value):
+    if not value:
+        return None
+
+    match = re.search(r"\d+", str(value))
+    return int(match.group()) if match else None
+
+def normalize_isbn13(value):
+    if not value:
+        return None
+
+    digits = ''.join(ch for ch in value if ch.isdigit())
+
+    if len(digits) == 13:
+        return digits
+
+    print(f"Invalid ISBN skipped: {value}")
+    return None
+
 
 def scrape(start_id, end_id):
     for book_id in range(start_id, end_id + 1):
@@ -60,13 +84,14 @@ def scrape(start_id, end_id):
             if not title:
                 continue
             isbn_raw = find_row("ISBN", soup)
-            isbn = only_digits(isbn_raw)
+            isbn = normalize_isbn13(isbn_raw)
             verfasser_row = find_row("Verfasser", soup)
             verfasser = parse_authors(verfasser_row)
             verlag = find_row("Verlag", soup)
-            jahr = find_row("Jahr", soup)
+            jahr_row = find_row("Jahr", soup)
+            jahr = parse_year(jahr_row)
             umfang_row = find_row("Umfang", soup)
-            umfang = only_digits(umfang_row)
+            umfang = normalize_pages(umfang_row)
             sprache = find_row("Sprache", soup)
             cover_image = div_cover_image.select_one("img") if div_cover_image else None
             cover_url = cover_image.get("src") if cover_image else None
