@@ -1,8 +1,11 @@
 from sqlalchemy import create_engine, text
 
-from settings import DATABASE_URL
+from settings import DATABASE_SCHEMA, DATABASE_URL
 
-engine = create_engine(DATABASE_URL)
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={"options": f"-csearch_path={DATABASE_SCHEMA}"}
+)
 
 
 def find_author_by_name(name):
@@ -27,13 +30,28 @@ def delete_authors_by_name(name):
 
 
 def add_author(name):
-    author_id = find_author_by_name(name)
-    if author_id:
-        return author_id
-
     with engine.begin() as connection:
-        result = connection.execute(text("""INSERT INTO author(name)
-                                            VALUES (:name) RETURNING id, name"""), {"name": name})
+        connection.execute(text("LOCK TABLE author IN SHARE ROW EXCLUSIVE MODE"))
+
+        author_id = connection.execute(
+            text("""
+                 SELECT id
+                 FROM author
+                 WHERE name = :name
+                 """),
+            {"name": name}
+        ).scalar()
+        if author_id:
+            return author_id
+
+        result = connection.execute(
+            text("""
+                 INSERT INTO author(name)
+                 VALUES (:name)
+                 RETURNING id
+                 """),
+            {"name": name}
+        )
         return result.scalar()
 
 
@@ -67,8 +85,9 @@ def find_books_by_id(book_id):
 
 
 def add_book(id, title, isbn13, year, language, pages, publisher, description, coverurl):
+    book_id = id
     params = {
-        "id": id,
+        "id": book_id,
         "title": title,
         "isbn13": isbn13,
         "year": year,
@@ -79,7 +98,7 @@ def add_book(id, title, isbn13, year, language, pages, publisher, description, c
         "coverurl": coverurl
     }
 
-    if find_books_by_id(id):
+    if find_books_by_id(book_id):
         with engine.begin() as connection:
             result = connection.execute(
                 text("""
