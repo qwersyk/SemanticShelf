@@ -1,10 +1,14 @@
 from sqlalchemy import create_engine, text
 
-DATABASE_URL = "postgresql+psycopg2://admin:admin123@localhost:5433/books_db"
-engine = create_engine(DATABASE_URL)
+from settings import DATABASE_SCHEMA, DATABASE_URL
+
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={"options": f"-csearch_path={DATABASE_SCHEMA}"}
+)
 
 
-def find_autor_by_name(name):
+def find_author_by_name(name):
     with engine.connect() as connection:
         result = connection.execute(text("""SELECT *
                                             FROM author
@@ -25,42 +29,65 @@ def delete_authors_by_name(name):
         return result.rowcount
 
 
-def add_autor(name):
-    id = find_autor_by_name(name)
-    if id:
-        return id
+def add_author(name):
     with engine.begin() as connection:
-        result = connection.execute(text("""INSERT INTO author(name)
-                                            VALUES (:name) RETURNING id, name"""), {"name": name})
+        connection.execute(text("LOCK TABLE author IN SHARE ROW EXCLUSIVE MODE"))
+
+        author_id = connection.execute(
+            text("""
+                 SELECT id
+                 FROM author
+                 WHERE name = :name
+                 """),
+            {"name": name}
+        ).scalar()
+        if author_id:
+            return author_id
+
+        result = connection.execute(
+            text("""
+                 INSERT INTO author(name)
+                 VALUES (:name)
+                 RETURNING id
+                 """),
+            {"name": name}
+        )
         return result.scalar()
 
 
 def link_authors(book_id, authors_names):
     if authors_names is None:
-        return;
-    authors_id = []
+        return None
+
+    author_ids = []
     for name in authors_names:
-        authors_id.append(add_autor(name))
+        author_ids.append(add_author(name))
+
+    if not author_ids:
+        return None
+
     with engine.begin() as connection:
-        for a in authors_id:
+        result = None
+        for author_id in author_ids:
             result = connection.execute(text("""INSERT INTO book_author(author_id, book_id)
                                                 VALUES (:author_id, :book_id)
                                                     ON CONFLICT (book_id, author_id) DO NOTHING
-                                             RETURNING *"""), {"author_id": a, "book_id": book_id})
+                                             RETURNING *"""), {"author_id": author_id, "book_id": book_id})
         return result.fetchone()
 
 
-def find_books_by_id(id):
+def find_books_by_id(book_id):
     with engine.connect() as connection:
         result = connection.execute(text("""SELECT *
                                             FROM book
-                                            WHERE id = :id"""), {"id": id})
+                                            WHERE id = :id"""), {"id": book_id})
         return result.scalar()
 
 
 def add_book(id, title, isbn13, year, language, pages, publisher, description, coverurl):
+    book_id = id
     params = {
-        "id": id,
+        "id": book_id,
         "title": title,
         "isbn13": isbn13,
         "year": year,
@@ -71,7 +98,7 @@ def add_book(id, title, isbn13, year, language, pages, publisher, description, c
         "coverurl": coverurl
     }
 
-    if find_books_by_id(id):
+    if find_books_by_id(book_id):
         with engine.begin() as connection:
             result = connection.execute(
                 text("""
