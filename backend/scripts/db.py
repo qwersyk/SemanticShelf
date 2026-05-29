@@ -31,23 +31,11 @@ def delete_authors_by_name(name):
 
 def add_author(name):
     with engine.begin() as connection:
-        connection.execute(text("LOCK TABLE author IN SHARE ROW EXCLUSIVE MODE"))
-
-        author_id = connection.execute(
-            text("""
-                 SELECT id
-                 FROM author
-                 WHERE name = :name
-                 """),
-            {"name": name}
-        ).scalar()
-        if author_id:
-            return author_id
-
         result = connection.execute(
             text("""
                  INSERT INTO author(name)
                  VALUES (:name)
+                 ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name
                  RETURNING id
                  """),
             {"name": name}
@@ -131,3 +119,66 @@ def add_book(id, title, isbn13, year, language, pages, publisher, description, c
         )
 
         return result.fetchone()
+
+
+def find_books_without_embedding(embedding_type, start_id, end_id):
+    with engine.connect() as connection:
+        result = connection.execute(
+            text("""
+                 SELECT id, title
+                 FROM book
+                 WHERE id BETWEEN :start_id AND :end_id
+                   AND NOT EXISTS (
+                     SELECT 1
+                     FROM embedding
+                     WHERE embedding.book_id = book.id
+                       AND embedding.embedding_type = :embedding_type
+                 )
+                 ORDER BY id
+                 """),
+            {"embedding_type": embedding_type, "start_id": start_id, "end_id": end_id}
+        )
+        return result.mappings().all()
+
+
+def find_author_names_for_books(book_ids):
+    if not book_ids:
+        return {}
+
+    with engine.connect() as connection:
+        result = connection.execute(
+            text("""
+                 SELECT book_author.book_id,
+                        author.name
+                 FROM author
+                          JOIN book_author ON book_author.author_id = author.id
+                 WHERE book_author.book_id = ANY (:book_ids)
+                 ORDER BY book_author.book_id, author.name
+                 """),
+            {"book_ids": book_ids}
+        )
+
+        authors_map = {}
+
+        for book_id, author_name in result:
+            authors_map.setdefault(book_id, []).append(author_name)
+
+        return authors_map
+
+
+def add_embeddings(rows, embedding_type, model_name, vectors):
+    with engine.begin() as connection:
+        for row, vector in zip(rows, vectors):
+            connection.execute(
+                text("""
+                     INSERT INTO embedding(book_id, embedding_type, model_name, embedding_vector)
+                     VALUES (:book_id, :embedding_type, :model_name, CAST(:embedding_vector AS public.vector))
+                     ON CONFLICT (book_id, embedding_type, model_name) DO NOTHING
+                     """),
+                {
+                    "book_id": row["id"],
+                    "embedding_type": embedding_type,
+                    "model_name": model_name,
+                    "embedding_vector": str(vector),
+                }
+            )
