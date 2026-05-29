@@ -1,9 +1,15 @@
-
 import requests
 from bs4 import BeautifulSoup
 from threading import Thread
 from db import add_book, link_authors
 import time
+
+DETAIL_URL_TEMPLATE = "https://htl-stp.bibbs.cc/search?mode=stb&q=&critCount=3&crit_0=&op_0=&crit_1=&op_1=AND&ma=0&exAnz=0&flt=Alle&gradeFlt=&sort_0=Systematik&sort_1=Haupteintrag&sort_2=Haupttitel&page=1&view=detail&page_size=10&id=0.{book_id}"
+REQUEST_TIMEOUT_SECONDS = 10
+THREAD_START_DELAY_SECONDS = 5
+SCRAPE_AMOUNT = 8000
+SCRAPE_THREADS = 8
+
 books = []
 
 def find_row(string , soup):
@@ -16,9 +22,9 @@ def scrape(a , b):
 
     for i in range(a ,b+1):
         try:
-            url = f'https://htl-stp.bibbs.cc/search?mode=stb&q=&critCount=3&crit_0=&op_0=&crit_1=&op_1=AND&ma=0&exAnz=0&flt=Alle&gradeFlt=&sort_0=Systematik&sort_1=Haupteintrag&sort_2=Haupttitel&page=1&view=detail&page_size=10&id=0.{i}'
+            url = DETAIL_URL_TEMPLATE.format(book_id=i)
 
-            response = requests.get(url, timeout=10)
+            response = requests.get(url, timeout=REQUEST_TIMEOUT_SECONDS)
 
             print(f"request done {i}")
             response.encoding = "utf-8"
@@ -84,7 +90,7 @@ def worker(amount, threads):
         threads_array.append(t)
 
         first = end + 1
-        time.sleep(5)
+        time.sleep(THREAD_START_DELAY_SECONDS)
 
     for t in threads_array:
         t.join()
@@ -92,4 +98,4 @@ def worker(amount, threads):
 
 
 if __name__ == '__main__':
-    worker(8000 , 8)
+    worker(SCRAPE_AMOUNT , SCRAPE_THREADS)
