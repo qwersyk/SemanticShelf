@@ -7,7 +7,8 @@ from bs4 import BeautifulSoup
 
 from db import add_book, link_authors
 
-DETAIL_URL_TEMPLATE = "https://htl-stp.bibbs.cc/search?mode=stb&q=&critCount=3&crit_0=&op_0=&crit_1=&op_1=AND&ma=0&exAnz=0&flt=Alle&gradeFlt=&sort_0=Systematik&sort_1=Haupteintrag&sort_2=Haupttitel&page=1&view=detail&page_size=10&id=0.{book_id}"
+BASE_URL = "https://htl-stp.bibbs.cc"
+DETAIL_URL_TEMPLATE = BASE_URL + "/search?view=detail&id=0.{book_id}"
 REQUEST_TIMEOUT_SECONDS = 10
 THREAD_START_DELAY_SECONDS = 5
 DEFAULT_START_ID = 1
@@ -27,6 +28,16 @@ def find_row(label, soup):
     except AttributeError:
         return None
 
+def only_digits(value):
+    return "".join(d for d in value if d.isdigit()) if value else None
+
+
+def parse_authors(value):
+    if not value:
+        return None
+
+    authors = [author.strip() for author in value.split(";") if author.strip()]
+    return authors or None
 
 def scrape(start_id, end_id):
     for book_id in range(start_id, end_id + 1):
@@ -34,6 +45,7 @@ def scrape(start_id, end_id):
             url = DETAIL_URL_TEMPLATE.format(book_id=book_id)
 
             response = requests.get(url, timeout=REQUEST_TIMEOUT_SECONDS)
+            response.raise_for_status()
 
             print(f"request done {book_id}")
             response.encoding = "utf-8"
@@ -43,19 +55,21 @@ def scrape(start_id, end_id):
             if not div:
                 continue
             div_cover_image = soup.select_one("div.coverimage")
-            title = div.select_one("h3").text
+            title_tag = div.select_one("h3")
+            title = title_tag.get_text(strip=True) if title_tag else None
             if not title:
                 continue
             isbn_raw = find_row("ISBN", soup)
-            isbn = "".join(d for d in isbn_raw if d.isdigit()) if isbn_raw else None
+            isbn = only_digits(isbn_raw)
             verfasser_row = find_row("Verfasser", soup)
-            verfasser = verfasser_row.split(";") if verfasser_row else None
+            verfasser = parse_authors(verfasser_row)
             verlag = find_row("Verlag", soup)
             jahr = find_row("Jahr", soup)
             umfang_row = find_row("Umfang", soup)
-            umfang = "".join(d for d in umfang_row if d.isdigit()) if umfang_row else None
+            umfang = only_digits(umfang_row)
             sprache = find_row("Sprache", soup)
-            cover_url = div_cover_image.select_one("img").attrs["src"]
+            cover_image = div_cover_image.select_one("img") if div_cover_image else None
+            cover_url = cover_image.get("src") if cover_image else None
             book = {
                 "id": book_id,
                 "title": title,
@@ -118,6 +132,10 @@ def parse_args():
     return parser.parse_args()
 
 
-if __name__ == '__main__':
+def main():
     args = parse_args()
     worker(args.start, args.end, args.threads)
+
+
+if __name__ == '__main__':
+    main()
