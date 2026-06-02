@@ -128,7 +128,26 @@ def get_relevant_books_for_book(book_id, offset, limit):
         return [book_from_row(connection, row) for row in result.mappings()]
 
 
+def get_random_books(offset, limit):
+    with engine.connect() as connection:
+        result = connection.execute(
+            text("""
+                 SELECT id, title, year, language, cover_url, NULL AS score
+                 FROM book
+                 ORDER BY random()
+                 OFFSET :offset LIMIT :limit
+                 """),
+            {
+                "offset": offset,
+                "limit": limit,
+            }
+        )
+        return [book_from_row(connection, row) for row in result.mappings()]
+
+
 def get_relevant_books_for_history(book_ids, offset, limit):
+    if not book_ids:
+        return get_random_books(offset, limit)
     with engine.connect() as connection:
         embedding_rows = connection.execute(
             text("""
