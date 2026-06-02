@@ -71,3 +71,37 @@ def search_books(query_vector, model_name, offset, limit):
         books = [book_from_row(connection, row) for row in result.mappings()]
 
     return books, total
+
+def get_relevant_books_for_book(book_id, offset, limit):
+    with engine.connect() as connection:
+        result = connection.execute(
+            text("""
+                 WITH source AS (SELECT embedding_vector, model_name
+                                 FROM embedding
+                                 WHERE book_id = :book_id
+                                   AND embedding_type = :embedding_type
+                                 ORDER BY created_at DESC
+                     LIMIT 1
+                     )
+                 SELECT book.id,
+                        book.title,
+                        book.year,
+                        book.language,
+                        book.cover_url,
+                        embedding.embedding_vector OPERATOR(public.<=>) source.embedding_vector AS score
+                 FROM source
+                          JOIN embedding ON embedding.embedding_type = :embedding_type
+                     AND embedding.model_name = source.model_name
+                          JOIN book ON book.id = embedding.book_id
+                 WHERE book.id != :book_id
+                 ORDER BY score
+                 OFFSET :offset LIMIT :limit
+                 """),
+            {
+                "book_id": book_id,
+                "embedding_type": DEFAULT_EMBEDDING_TYPE,
+                "offset": offset,
+                "limit": limit,
+            }
+        )
+        return [book_from_row(connection, row) for row in result.mappings()]
