@@ -19,6 +19,9 @@ def search(
         offset: int = Query(default=0, ge=0),
         limit: int = Query(default=10, ge=1, le=50),
 ):
+    if not q.strip():
+        raise HTTPException(status_code=400, detail="Search query cannot be empty")
+
     try:
         model_name, query_vector = embed_query(q)
     except RequestException as error:
@@ -49,6 +52,8 @@ def relevant_for_history(request: RelevantRequest):
 @app.get("/api/books/{book_id}", response_model=BookDetail)
 def book_detail(book_id: int):
     book = get_book(book_id)
+    if book is None:
+        raise HTTPException(status_code=404, detail="Book not found")
     return book
 
 
@@ -58,6 +63,8 @@ def relevant_for_book(
         offset: int = Query(default=0, ge=0),
         limit: int = Query(default=10, ge=1, le=50),
 ):
+    if get_book(book_id) is None:
+        raise HTTPException(status_code=404, detail="Book not found")
 
     books = get_relevant_books_for_book(book_id, offset, limit)
     return {
