@@ -72,6 +72,27 @@ def search_books(query_vector, model_name, offset, limit):
 
     return books, total
 
+
+def get_book(book_id):
+    with engine.connect() as connection:
+        row = connection.execute(
+            text("""
+                 SELECT id,
+                        title,
+                        description,
+                        isbn13, year, language, publisher, pages, cover_url
+                 FROM book
+                 WHERE id = :book_id
+                 """),
+            {"book_id": book_id}
+        ).mappings().first()
+
+        if row is None:
+            return None
+
+        return book_from_row(connection, row)
+
+
 def get_relevant_books_for_book(book_id, offset, limit):
     with engine.connect() as connection:
         result = connection.execute(
@@ -100,6 +121,62 @@ def get_relevant_books_for_book(book_id, offset, limit):
             {
                 "book_id": book_id,
                 "embedding_type": DEFAULT_EMBEDDING_TYPE,
+                "offset": offset,
+                "limit": limit,
+            }
+        )
+        return [book_from_row(connection, row) for row in result.mappings()]
+
+
+def get_relevant_books_for_history(book_ids, offset, limit):
+    with engine.connect() as connection:
+        embedding_rows = connection.execute(
+            text("""
+                 SELECT model_name, embedding_vector::text AS embedding_vector
+                 FROM embedding
+                 WHERE book_id = ANY (:book_ids)
+                   AND embedding_type = :embedding_type
+                 ORDER BY created_at DESC
+                 """),
+            {"book_ids": book_ids, "embedding_type": DEFAULT_EMBEDDING_TYPE}
+        ).mappings().all()
+
+        if not embedding_rows:
+            return []
+
+        model_name = embedding_rows[0]["model_name"]
+        vectors = [
+            [float(item) for item in row["embedding_vector"].strip("[]").split(",")]
+            for row in embedding_rows
+            if row["model_name"] == model_name
+        ]
+        average_vector = "[" + ",".join(str(value) for value in [
+            sum(vector[i] for vector in vectors) / len(vectors)
+            for i in range(len(vectors[0]))
+        ]) + "]"
+
+        result = connection.execute(
+            text("""
+                 SELECT book.id,
+                        book.title,
+                        book.year,
+                        book.language,
+                        book.cover_url,
+                        embedding.embedding_vector OPERATOR(public.<=>) CAST(:average_vector AS public.vector) AS score
+                 FROM embedding
+                     JOIN book
+                 ON book.id = embedding.book_id
+                 WHERE embedding.embedding_type = :embedding_type
+                   AND embedding.model_name = :model_name
+                   AND NOT (embedding.book_id = ANY (:book_ids))
+                 ORDER BY score
+                 OFFSET :offset LIMIT :limit
+                 """),
+            {
+                "book_ids": book_ids,
+                "embedding_type": DEFAULT_EMBEDDING_TYPE,
+                "model_name": model_name,
+                "average_vector": average_vector,
                 "offset": offset,
                 "limit": limit,
             }
