@@ -2,14 +2,14 @@
 
 ## Backend – Embedding API
 
-| Testfall                         | Beschreibung                   | Erwartetes Ergebnis                         |
-|----------------------------------|--------------------------------|---------------------------------------------|
-| GET /health                      | Prüfung des Health-Endpunkts   | Status 200 und gültige Statusmeldung        |
-| GET /model ohne API-Key          | Zugriff ohne Authentifizierung | Status 401 Unauthorized                     |
-| GET /model mit gültigem API-Key  | Abruf der Modellinformationen  | Modelldaten werden zurückgegeben            |
-| POST /embed mit gültigen Daten   | Erstellung von Embeddings      | Embeddings werden erfolgreich zurückgegeben |
-| POST /embed ohne API-Key         | Anfrage ohne Authentifizierung | Status 401 Unauthorized                     |
-| POST /embed mit leerer Textliste | Ungültige Eingabedaten         | Status 400 Bad Request                      |
+| Testfall                         | Beschreibung                  | Erwartetes Ergebnis                         |
+|----------------------------------|-------------------------------|---------------------------------------------|
+| GET /health                      | Prüfung des Health-Endpunkts  | Status 200 und gültige Statusmeldung        |
+| GET /model mit falschem API-Key  | Zugriff mit falschem API-Key  | Status 401 Unauthorized                     |
+| GET /model mit gültigem API-Key  | Abruf der Modellinformationen | Modelldaten werden zurückgegeben            |
+| POST /embed mit gültigen Daten   | Erstellung von Embeddings     | Embeddings werden erfolgreich zurückgegeben |
+| POST /embed mit falschem API-Key | Anfrage mit falschem API-Key  | Status 401 Unauthorized                     |
+| POST /embed mit leerer Textliste | Ungültige Eingabedaten        | Status 400 Bad Request                      |
 
 ## Backend – SemanticShelf API
 
@@ -27,5 +27,6 @@
 Die Unit-Tests des SemanticShelf API verwenden gemockte Datenbank- und Embedding-Funktionen. Dadurch werden die
 API-Endpunkte getestet, ohne dass eine echte PostgreSQL-Datenbank oder ein laufendes Embedding API notwendig ist.
 
-### TODO
-- [ ] Add integration tests
+## TODO
+
+- [ ] Frontend-Tests ergaenzen, sobald das Frontend implementiert ist.

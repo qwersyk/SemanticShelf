@@ -5,10 +5,10 @@
 | Testfall                         | Erwartetes Ergebnis               | Ergebnis                     | Status    | Datum      |
 |----------------------------------|-----------------------------------|------------------------------|-----------|------------|
 | GET /health                      | 200 OK und Statusmeldung          | Funktioniert korrekt         | Bestanden | 22.05.2026 |
-| GET /model ohne API-Key          | 401 Unauthorized                  | Fehler korrekt zurückgegeben | Bestanden | 22.05.2026 |
+| GET /model mit falschem API-Key  | 401 Unauthorized                  | Fehler korrekt zurückgegeben | Bestanden | 03.06.2026 |
 | GET /model mit gültigem API-Key  | Modelldaten werden geliefert      | Erfolgreich                  | Bestanden | 22.05.2026 |
 | POST /embed mit gültigen Daten   | Embeddings werden zurückgegeben   | Erfolgreich                  | Bestanden | 22.05.2026 |
-| POST /embed ohne API-Key         | 401 Unauthorized                  | Fehler korrekt zurückgegeben | Bestanden | 22.05.2026 |
+| POST /embed mit falschem API-Key | 401 Unauthorized                  | Fehler korrekt zurückgegeben | Bestanden | 03.06.2026 |
 | POST /embed mit leerer Textliste | 400 Bad Request mit Fehlermeldung | Fehler korrekt zurückgegeben | Bestanden | 22.05.2026 |
 
 ## Testumgebung
@@ -27,7 +27,7 @@ cd backend/embedding-api
 python3 -m pytest
 ```
 
-`Ergebnis: 6 passed in 10.66s`
+`Ergebnis: 6 passed in 4.63s`
 
 ## Backend - SemanticShelf API
 
@@ -47,8 +47,16 @@ python3 -m pytest
 Die Unit-Tests wurden mit folgendem Befehl ausgeführt:
 
 ```bash
-cd semanticshelf-api
+cd backend/semanticshelf-api
 python3 -m pytest -q
 ```
 
-`Ergebnis: 8 passed, 1 skipped in 0.39s`
+`Ergebnis: 8 passed in 0.62s`
+
+## TODO Frontend-Tests
+
+- [ ] Startseite oeffnen
+- [ ] Suchbegriff eingeben und Ergebnisse pruefen
+- [ ] Buchdetailseite oeffnen
+- [ ] Relevante Buecher / For-you-Bereich pruefen
+- [ ] Frontend mit Backend und Datenbank gemeinsam testen
