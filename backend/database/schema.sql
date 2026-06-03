@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS semanticshelf.book
     description TEXT,
     isbn13      VARCHAR(13),
     year        INTEGER,
-    language    TYPE TEXT,
+    language    TEXT,
     publisher   TEXT,
     pages       INTEGER,
     cover_url   TEXT
