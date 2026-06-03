@@ -7,13 +7,20 @@ from sentence_transformers import SentenceTransformer
 API_KEY = os.getenv("API_KEY", "secret")
 MODEL_NAME = os.getenv("MODEL_NAME", "intfloat/multilingual-e5-small")
 
-model = SentenceTransformer(MODEL_NAME)
+model = None
 
 app = FastAPI()
 
 
 class EmbedRequest(BaseModel):
     texts: list[str]
+
+
+def get_model():
+    global model
+    if model is None:
+        model = SentenceTransformer(MODEL_NAME)
+    return model
 
 
 @app.get("/health")
@@ -31,9 +38,11 @@ async def model_info(x_api_key: str = Header(...)):
             detail="Invalid API key"
         )
 
+    current_model = get_model()
+
     return {
         "model": MODEL_NAME,
-        "dimensions": model.get_embedding_dimension()
+        "dimensions": current_model.get_embedding_dimension()
     }
 
 
@@ -51,10 +60,11 @@ async def embed(request: EmbedRequest, x_api_key: str = Header(...)):
             detail="texts list cannot be empty"
         )
 
-    vectors = model.encode(request.texts, normalize_embeddings=True).tolist()
+    current_model = get_model()
+    vectors = current_model.encode(request.texts, normalize_embeddings=True).tolist()
 
     return {
         "model": MODEL_NAME,
-        "dimensions": model.get_embedding_dimension(),
+        "dimensions": current_model.get_embedding_dimension(),
         "vectors": vectors
     }
