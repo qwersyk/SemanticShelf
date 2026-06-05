@@ -1,8 +1,12 @@
 .DS_Store
 .idea/
 .pytest_cache/
-.test/
 .venv/
 __pycache__/
 *.py[cod]
 .env
+node_modules/
+dist/
+.angular/
+coverage/
+npm-debug.log*
