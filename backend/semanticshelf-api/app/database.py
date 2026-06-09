@@ -29,11 +29,12 @@ def book_from_row(connection, row):
     return data
 
 
-def search_books(query_vector, model_name, offset, limit):
+def search_books(query_vector, model_name, offset, limit, author_filter=None):
     params = {
         "query_vector": query_vector,
         "model_name": model_name,
         "embedding_type": DEFAULT_EMBEDDING_TYPE,
+        "author_filter": author_filter,
         "offset": offset,
         "limit": limit,
     }
@@ -46,6 +47,16 @@ def search_books(query_vector, model_name, offset, limit):
                           JOIN embedding ON embedding.book_id = book.id
                  WHERE embedding.embedding_type = :embedding_type
                    AND embedding.model_name = :model_name
+                   AND (
+                     :author_filter IS NULL
+                         OR EXISTS (
+                         SELECT 1
+                         FROM book_author
+                                  JOIN author ON author.id = book_author.author_id
+                         WHERE book_author.book_id = book.id
+                           AND author.name ILIKE '%' || :author_filter || '%'
+                     )
+                     )
                  """),
             params
         ).scalar()
@@ -63,6 +74,16 @@ def search_books(query_vector, model_name, offset, limit):
                  ON embedding.book_id = book.id
                  WHERE embedding.embedding_type = :embedding_type
                    AND embedding.model_name = :model_name
+                   AND (
+                     :author_filter IS NULL
+                         OR EXISTS (
+                         SELECT 1
+                         FROM book_author
+                                  JOIN author ON author.id = book_author.author_id
+                         WHERE book_author.book_id = book.id
+                           AND author.name ILIKE '%' || :author_filter || '%'
+                     )
+                     )
                  ORDER BY score
                  OFFSET :offset LIMIT :limit
                  """),
