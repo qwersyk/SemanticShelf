@@ -36,7 +36,7 @@ def test_health():
 
 def test_search(monkeypatch):
     monkeypatch.setattr(main, "embed_query", lambda query: ("test-model", "[0.1,0.2]"))
-    monkeypatch.setattr(main, "search_books", lambda vector, model, offset, limit: ([BOOK_SUMMARY], 1))
+    monkeypatch.setattr(main, "search_books", lambda vector, model, offset, limit, author_filter=None: ([BOOK_SUMMARY], 1))
 
     response = client.get("/api/books/search?q=python&offset=0&limit=10")
 
@@ -46,6 +46,27 @@ def test_search(monkeypatch):
     assert data["total"] == 1
     assert data["offset"] == 0
     assert data["limit"] == 10
+
+
+def test_search_with_author_filter(monkeypatch):
+    captured = {}
+
+    def fake_embed_query(query):
+        captured["query"] = query
+        return "test-model", "[0.1,0.2]"
+
+    def fake_search_books(vector, model, offset, limit, author_filter=None):
+        captured["author_filter"] = author_filter
+        return [BOOK_SUMMARY], 1
+
+    monkeypatch.setattr(main, "embed_query", fake_embed_query)
+    monkeypatch.setattr(main, "search_books", fake_search_books)
+
+    response = client.get("/api/books/search?q=python author:`Test Author`")
+
+    assert response.status_code == 200
+    assert captured["query"] == "python"
+    assert captured["author_filter"] == "Test Author"
 
 
 def test_search_empty_query():

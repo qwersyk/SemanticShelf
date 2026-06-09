@@ -1,11 +1,34 @@
+import re
+
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
 from requests import RequestException
 
 from app.database import get_book, get_relevant_books_for_book, get_relevant_books_for_history, search_books
 from app.embedding import embed_query
 from app.schemas import BookDetail, BookListResponse, RelevantRequest
+from app.settings import CORS_ALLOW_ALL
 
 app = FastAPI(title="SemanticShelf API")
+
+if CORS_ALLOW_ALL:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+AUTHOR_FILTER_PATTERN = re.compile(r"\bauthor:`([^`]+)`", re.IGNORECASE)
+
+
+def parse_search_query(query):
+    author_match = AUTHOR_FILTER_PATTERN.search(query)
+    author_filter = author_match.group(1).strip() if author_match else None
+    author_filter = author_filter or None
+    clean_query = AUTHOR_FILTER_PATTERN.sub("", query)
+    clean_query = " ".join(clean_query.split())
+    return clean_query, author_filter
 
 
 @app.get("/api/health")
@@ -19,17 +42,19 @@ def search(
         offset: int = Query(default=0, ge=0),
         limit: int = Query(default=10, ge=1, le=50),
 ):
-    if not q.strip():
+    clean_query, author_filter = parse_search_query(q)
+
+    if not clean_query:
         raise HTTPException(status_code=400, detail="Search query cannot be empty")
 
     try:
-        model_name, query_vector = embed_query(q)
+        model_name, query_vector = embed_query(clean_query)
     except RequestException as error:
         raise HTTPException(status_code=503, detail="Embedding API is unavailable") from error
     except RuntimeError as error:
         raise HTTPException(status_code=502, detail=str(error)) from error
 
-    books, total = search_books(query_vector, model_name, offset, limit)
+    books, total = search_books(query_vector, model_name, offset, limit, author_filter)
     return {
         "items": books,
         "total": total,
