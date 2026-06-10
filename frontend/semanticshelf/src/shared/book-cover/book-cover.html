@@ -1,0 +1,17 @@
+@if (book().cover_url) {
+  <img [src]="book().cover_url" [alt]="book().title" class="book-cover-image"/>
+} @else {
+  <div
+    class="book-cover-fallback"
+    [style.--cover-bg]="palette().bg"
+    [style.--cover-fg]="palette().fg"
+    [style.--cover-accent]="palette().accent"
+  >
+    <div class="book-cover-main">
+      <p class="book-cover-title">{{ book().title }}</p>
+      @if (book().year) {
+        <p class="book-cover-year"> Ausgabe {{ book().year }}</p>
+      }
+    </div>
+  </div>
+}

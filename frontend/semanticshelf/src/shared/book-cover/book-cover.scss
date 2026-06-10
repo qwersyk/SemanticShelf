@@ -1,0 +1,46 @@
+:host {
+  container-type: inline-size;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.book-cover-fallback {
+  width: 100%;
+  height: 100%;
+  color: var(--cover-fg);
+  background: var(--cover-bg);
+  box-shadow: inset 3px 0 10px rgb(0 0 0 / 0.15);
+}
+
+.book-cover-fallback::after {
+  content: "";
+  position: absolute;
+  top: 10cqi;
+  right: -10cqi;
+  width: 45cqi;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--cover-accent);
+  opacity: 0.85;
+  mix-blend-mode: difference;
+}
+
+.book-cover-main {
+  position: relative;
+  z-index: 1;
+  padding: 10px;
+}
+
+.book-cover-title {
+  font-size: clamp(1rem, 9cqi, 1.75rem);
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.book-cover-year {
+  font-size: clamp(0.55rem, 3.5cqi, 0.75rem);
+  text-transform: uppercase;
+  font-weight: 600;
+  opacity: 0.86;
+}
