@@ -132,11 +132,12 @@ Angular Frontend  →  FastAPI Backend  →  PostgreSQL Datenbank
 ## 8. Datenkatalog
 
 | Tabelle      | Zweck                                                  |
-|---------------|--------------------------------------------------------|
-| authors       | Speicherung der Autorinnen und Autoren                 |
-| books         | Speicherung der Buchinformationen                      |
-| book_authors  | Zuordnung zwischen Büchern und Autoren                 |
-| embeddings    | Speicherung der Buchvektoren für die semantische Suche |
+|--------------|--------------------------------------------------------|
+| authors      | Speicherung der Autorinnen und Autoren                 |
+| books        | Speicherung der Buchinformationen                      |
+| book_authors | Zuordnung zwischen Büchern und Autoren                 |
+| embeddings   | Speicherung der Buchvektoren für die semantische Suche |
+| genres       | Speicherung der Genres und Genre-Vektoren              |
 
 ### Felder
 
@@ -146,6 +147,7 @@ Angular Frontend  →  FastAPI Backend  →  PostgreSQL Datenbank
 | books        | id, title, description, year, publisher, pages, language, cover_url, isbn13 |
 | book_authors | book_id, author_id                                                          |
 | embeddings   | id, book_id, vector, embedding_type, model_name                             |
+| genres       | id, name, description, model_name, vector                                   |
 
 ---
 
@@ -166,6 +168,7 @@ für die semantische Suche.
 |---------|--------------------------|-------------------------------------------|
 | GET     | /api/books/search        | Sucht Bücher anhand eines Suchbegriffs    |
 | GET     | /api/books/{id}          | Gibt die Details zu einem Buch zurück     |
+| GET     | /api/books/{id}/genres   | Gibt passende Genres zu einem Buch zurück |
 | GET     | /api/books/{id}/relevant | Gibt ähnliche Bücher zu einem Buch zurück |
 | POST    | /api/books/relevant      | Gibt allgemein relevante Bücher zurück    |
 
