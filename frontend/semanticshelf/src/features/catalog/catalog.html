@@ -1,5 +1,3 @@
-<lucide-icon name="search" [strokeWidth]="0.75"></lucide-icon>
-
 <div class="w-full flex justify-end gap-6 px-6 pt-4">
   <div class="dropdown dropdown-end">
     <div
@@ -65,14 +63,27 @@
 <div>
 
 </div>
-  <input
-    type="text"
-    placeholder="Schau ma moi, wos ma findn..."
-    class="input input-bordered input-lg w-full max-w-xl rounded-full focus:outline-none focus:ring-0 font-semibold text-lg tracking-wide placeholder:font-light placeholder:text-neutral-400"
-    [value]="query()"
-    (input)="query.set($any($event.target).value)"
-    (keydown.enter)="searchBooks()"
-  />
+  <label
+    class="input input-bordered input-lg w-full max-w-xl rounded-full focus-within:outline-none focus-within:ring-0 font-semibold text-lg tracking-wide"
+  >
+    <input
+      type="text"
+      placeholder="Schau ma moi, wos ma findn..."
+      class="grow placeholder:font-light placeholder:text-neutral-400"
+      [value]="query()"
+      (input)="query.set($any($event.target).value)"
+      (keydown.enter)="searchBooks()"
+    />
+
+    <button
+      type="button"
+      class="btn btn-sm btn-circle"
+      (click)="searchBooks()"
+    >
+      →
+    </button>
+  </label>
+
 </div>
 
 @if (isLoading()) {
