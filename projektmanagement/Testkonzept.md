@@ -21,6 +21,8 @@
 | GET /api/books/search leer              | Suche mit leerem Suchbegriff                  | Status 400 Bad Request                           |
 | GET /api/books/{id}                     | Abruf von Buchdetails                         | Buchdetails werden zurückgegeben                 |
 | GET /api/books/{id} unbekannt           | Abruf eines nicht existierenden Buchs         | Status 404 Not Found                             |
+| GET /api/books/{id}/genres              | Abruf passender Genres zu einem Buch          | Genres mit Wahrscheinlichkeit werden geliefert   |
+| GET /api/books/{id}/genres unbekannt    | Genres für ein nicht existierendes Buch       | Status 404 Not Found                             |
 | GET /api/books/{id}/relevant            | Abruf ähnlicher Bücher zu einem Buch          | Ähnliche Bücher werden zurückgegeben             |
 | GET /api/books/{id}/relevant unbekannt  | Ähnliche Bücher für nicht existierendes Buch  | Status 404 Not Found                             |
 | POST /api/books/relevant                | Empfehlungen anhand mehrerer gelesener Bücher | Relevante Bücher werden zurückgegeben            |

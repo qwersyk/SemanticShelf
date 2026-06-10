@@ -26,6 +26,12 @@ BOOK_DETAIL = {
     "pages": 100,
 }
 
+GENRE_SCORE = {
+    "id": 1,
+    "name": "Fantasy",
+    "probability": 0.82,
+}
+
 
 def test_health():
     response = client.get("/api/health")
@@ -102,6 +108,25 @@ def test_relevant_for_book(monkeypatch):
 
     assert response.status_code == 200
     assert response.json()["items"][0]["id"] == 1
+
+
+def test_book_genres(monkeypatch):
+    monkeypatch.setattr(main, "get_book", lambda book_id: BOOK_DETAIL)
+    monkeypatch.setattr(main, "get_genres_for_book", lambda book_id, limit: [GENRE_SCORE])
+
+    response = client.get("/api/books/1/genres?limit=5")
+
+    assert response.status_code == 200
+    assert response.json()[0]["name"] == "Fantasy"
+    assert response.json()[0]["probability"] == 0.82
+
+
+def test_book_genres_not_found(monkeypatch):
+    monkeypatch.setattr(main, "get_book", lambda book_id: None)
+
+    response = client.get("/api/books/404/genres")
+
+    assert response.status_code == 404
 
 
 def test_relevant_for_book_not_found(monkeypatch):

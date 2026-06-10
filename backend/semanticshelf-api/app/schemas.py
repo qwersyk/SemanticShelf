@@ -29,3 +29,9 @@ class RelevantRequest(BaseModel):
     book_ids: list[int] = Field(min_length=0)
     offset: int = Field(default=0, ge=0)
     limit: int = Field(default=10, ge=1, le=50)
+
+
+class GenreScore(BaseModel):
+    id: int
+    name: str
+    probability: float
