@@ -39,6 +39,8 @@ python3 -m pytest
 | GET /api/books/search leer              | 400 Bad Request                          | Fehler korrekt zurückgegeben | Bestanden | 02.06.2026 |
 | GET /api/books/{id}                     | Buchdetails werden geliefert             | Erfolgreich                  | Bestanden | 02.06.2026 |
 | GET /api/books/{id} unbekannt           | 404 Not Found                            | Fehler korrekt zurückgegeben | Bestanden | 02.06.2026 |
+| GET /api/books/{id}/genres              | Genres werden geliefert                  | Erfolgreich                  | Bestanden | 10.06.2026 |
+| GET /api/books/{id}/genres unbekannt    | 404 Not Found                            | Fehler korrekt zurückgegeben | Bestanden | 10.06.2026 |
 | GET /api/books/{id}/relevant            | Ähnliche Bücher werden geliefert         | Erfolgreich                  | Bestanden | 02.06.2026 |
 | GET /api/books/{id}/relevant unbekannt  | 404 Not Found                            | Fehler korrekt zurückgegeben | Bestanden | 02.06.2026 |
 | POST /api/books/relevant                | Empfehlungen werden geliefert            | Erfolgreich                  | Bestanden | 02.06.2026 |
@@ -52,7 +54,7 @@ cd backend/semanticshelf-api
 python3 -m pytest -q
 ```
 
-`Ergebnis: 9 passed in 0.66s`
+`Ergebnis: 11 passed in 0.73s`
 
 ## TODO Frontend-Tests
 
