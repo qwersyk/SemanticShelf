@@ -1,6 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import {BookApiService} from '../../core/services/book-api-service';
-import {HttpClient} from '@angular/common/http';
 import {PreviewBook} from '../../core/models/preview-book';
 import {PreviewBookComponent} from '../preview-book/preview-book';
 import { LucideAngularModule,} from 'lucide-angular';
@@ -20,7 +19,7 @@ export class Catalog {
   readonly isLoading = signal<boolean>(false);
   readonly error = signal('');
   private router = inject(Router);
-  readonly query = signal(this.router.url.valueOf().slice(8) ?? "");
+  readonly query = signal(decodeURIComponent(this.router.url.valueOf().slice(8) ?? ""));
   readonly isSearchPage = computed(() => this.router.url.startsWith('/search'));
   private offset = 12;
 
