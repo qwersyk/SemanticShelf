@@ -51,3 +51,14 @@ CREATE TABLE IF NOT EXISTS semanticshelf.embedding
             REFERENCES semanticshelf.book (id)
             ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS semanticshelf.genre
+(
+    id               BIGSERIAL PRIMARY KEY,
+    name             TEXT         NOT NULL UNIQUE,
+    description      TEXT         NOT NULL,
+    model_name       VARCHAR(100) NOT NULL,
+    embedding_vector public.vector(384) NOT NULL,
+    created_at       TIMESTAMP WITH TIME ZONE
+        DEFAULT NOW()
+);
