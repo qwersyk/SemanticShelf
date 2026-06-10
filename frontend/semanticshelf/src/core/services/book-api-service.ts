@@ -2,6 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {PreviewBook} from '../models/preview-book';
 import {Book} from '../models/book.model';
+import {Relevant_return} from '../models/relevant_return';
 
 
 @Injectable({
@@ -9,13 +10,10 @@ import {Book} from '../models/book.model';
 })
 export class BookApiService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'https://semanticshelf.qsk.me';
+  private readonly baseUrl = 'https://semanticshelfapidev.qsk.me/';
 
   searchBook(query: string , offset = 0 ,limit = 10) {
-    const params = new HttpParams();
-    params.set('q', query);
-    params.set('offset', offset);
-    params.set('limit', limit);
+    const params = new HttpParams().set('q', query).set('offset', offset).set('limit', limit);
     return this.http.get<PreviewBook[]>(`${this.baseUrl}/api/books/search`, {params: params});
   }
   getBookById(id: number) {
@@ -25,7 +23,7 @@ export class BookApiService {
     return this.http.get<PreviewBook[]>(`${this.baseUrl}/api/books/${id}/relevant`);
   }
   postBooksRelevant(bookIds:number[] ,offset = 0 ,limit = 10 ) {
-    return this.http.post(`${this.baseUrl}/api/books/relevant`, {book_ids: bookIds , offset: offset , limit: limit});
+    return this.http.post<Relevant_return>(`${this.baseUrl}/api/books/relevant`, {book_ids: bookIds , offset: offset , limit: limit});
   }
 
 

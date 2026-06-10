@@ -1,0 +1,86 @@
+<div class="w-full flex justify-end gap-6 px-6 pt-4">
+  <div class="dropdown dropdown-end">
+    <div
+      tabindex="0"
+      role="button"
+      class="italic text-sm text-neutral-400 hover:text-white cursor-pointer"
+    >
+      Öffnungszeiten
+    </div>
+
+    <div
+      tabindex="0"
+      class="dropdown-content card bg-base-100 z-50 w-80 shadow-xl border border-base-300"
+    >
+      <div class="card-body text-sm leading-relaxed">
+        <p class="font-bold text-base mb-2">Öffnungszeiten</p>
+
+        <p>Mo 11:20–13:10 und 15:50–18:35</p>
+        <p>Di 07:00–09:30 und 15:50–16:40</p>
+        <p>Mi 07:50–12:10</p>
+        <p>Do 10:30–12:10</p>
+        <p>Fr geschlossen</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="dropdown dropdown-end">
+    <div
+      tabindex="0"
+      role="button"
+      class="italic text-sm text-neutral-400 hover:text-white cursor-pointer"
+    >
+      Kontakt
+    </div>
+
+    <div
+      tabindex="0"
+      class="dropdown-content card bg-base-100 z-50 w-80 shadow-xl border border-base-300"
+    >
+      <div class="card-body text-sm leading-relaxed">
+        <p class="font-bold text-base mb-2">Kontakt</p>
+
+        <p>Mag. Helmut Freimann</p>
+        <p>helmut.freimann&#64;htlstp.ac.at</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex flex-col gap-8 items-center justify-center pt-28 pb-10 px-6">
+  <h1 class="text-center text-6xl font-extrabold">
+    Gönn da an guadn
+    <span class="text-rotate">
+      <span>
+        <span class="text-pink-500">Roman</span>
+        <span class="text-blue-500">Krimi</span>
+        <span class="text-purple-500">Fantasy</span>
+        <span class="text-red-900">Thriller</span>
+        <span>Klassiker</span>
+      </span>
+    </span>
+  </h1>
+<div>
+
+</div>
+  <input
+    type="text"
+    placeholder="Schau ma moi, wos ma findn..."
+    class="input input-bordered input-lg w-full max-w-xl rounded-full focus:outline-none focus:ring-0 font-semibold text-lg tracking-wide placeholder:font-light placeholder:text-neutral-400"
+    [value]="query()"
+    (input)="query.set($any($event.target).value)"
+    (keydown.enter)="searchBooks()"
+  />
+</div>
+
+@if (isLoading()) {
+  <p class="text-center mt-4">Loading...</p>
+} @else {
+  <div class="flex flex-wrap justify-center gap-6 px-84 pb-16">
+    @for (book of books(); track $index) {
+      <app-preview-book [book]="book"></app-preview-book>
+    } @empty {
+      <p>No books found</p>
+    }
+  </div>
+}
