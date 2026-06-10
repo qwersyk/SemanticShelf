@@ -1,3 +1,5 @@
+<lucide-icon name="search" [strokeWidth]="0.75"></lucide-icon>
+
 <div class="w-full flex justify-end gap-6 px-6 pt-4">
   <div class="dropdown dropdown-end">
     <div
@@ -76,7 +78,7 @@
 @if (isLoading()) {
   <p class="text-center mt-4">Loading...</p>
 } @else {
-  <div class="flex flex-wrap justify-center gap-6 px-84 pb-16">
+  <div class="flex flex-wrap justify-center gap-6 px-32 pb-16">
     @for (book of books(); track $index) {
       <app-preview-book [book]="book"></app-preview-book>
     } @empty {

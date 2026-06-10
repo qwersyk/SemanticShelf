@@ -10,4 +10,5 @@ import { BookCover } from '../../shared/book-cover/book-cover';
 })
 export class PreviewBookComponent {
   readonly book = input.required<PreviewBook>();
+
 }
