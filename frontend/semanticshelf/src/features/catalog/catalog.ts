@@ -23,13 +23,15 @@ export class Catalog {
   readonly query = signal(this.router.url.valueOf().slice(8) ?? "");
   readonly isSearchPage = computed(() => this.router.url.startsWith('/search'));
   private offset = 12;
+
+
   searchBooks(): void {
     const query = this.query().trim();
+    this.isLoading.set(true);
     if (!query) {
       this.books.set([]);
       return;
     }
-    this.isLoading.set(true);
     this.api.searchBook(this.query()).subscribe({
       next: (results) => {
         this.books.set(results.items);
@@ -43,22 +45,27 @@ export class Catalog {
   }
   startPage(): void {
     if(this.query()){
-      this.goToSearch()
+      this.searchBooks()
 
+    }else {
+      this.error.set('');
+      this.isLoading.set(true);
+      setTimeout(() => {
+        this.api.postBooksRelevant([]).subscribe({
+          next: (results) => {
+            this.books.set(results.items ?? []);
+            this.isLoading.set(false);
+          },
+          error: (err) => {
+            this.error.set('Error occurred while loading books');
+            this.books.set([]);
+            this.isLoading.set(false);
+          },
+        });
+      }, 1000);
     }
-    this.error.set('');
-    this.isLoading.set(true);
-    this.api.postBooksRelevant([]).subscribe({
-      next: (results) => {
-        this.books.set(results.items ?? []);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        this.error.set('Error occurred while loading books');
-        this.books.set([]);
-        this.isLoading.set(false);
-      },
-    });
+
+
   }
 
 
