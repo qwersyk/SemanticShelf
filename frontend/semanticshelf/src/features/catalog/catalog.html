@@ -3,7 +3,7 @@
     <div
       tabindex="0"
       role="button"
-      class="italic text-sm text-neutral-400 hover:text-white cursor-pointer"
+      class="italic text-sm text-neutral-400 hover:text-base-content cursor-pointer"
     >
       Öffnungszeiten
     </div>
@@ -28,7 +28,7 @@
     <div
       tabindex="0"
       role="button"
-      class="italic text-sm text-neutral-400 hover:text-white cursor-pointer"
+      class="italic text-sm text-neutral-400 hover:text-base-content cursor-pointer"
     >
       Kontakt
     </div>
@@ -72,13 +72,15 @@
       class="grow placeholder:font-light placeholder:text-neutral-400"
       [value]="query()"
       (input)="query.set($any($event.target).value)"
-      (keydown.enter)="searchBooks()"
+      (keydown.enter)=goToSearch()
+
     />
 
     <button
       type="button"
       class="btn btn-sm btn-circle"
-      (click)="searchBooks()"
+      [disabled]="!query().trim()"
+      (click)=goToSearch()
     >
       →
     </button>
@@ -96,4 +98,12 @@
       <p>No books found</p>
     }
   </div>
+    @if(isSearchPage()){
+      <div class="flex justify-center">
+        <button (click)="loadMoreBooks()" class="btn hover:text-base-content ">Noch</button>
+      </div>
+    }
+
 }
+
+
