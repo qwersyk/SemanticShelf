@@ -1,10 +1,10 @@
-import {Component, inject, signal} from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import {BookApiService} from '../../core/services/book-api-service';
-import {HttpClient} from '@angular/common/http';
 import {PreviewBook} from '../../core/models/preview-book';
 import {PreviewBookComponent} from '../preview-book/preview-book';
-import { LucideAngularModule } from 'lucide-angular';
-;
+import { LucideAngularModule,} from 'lucide-angular';
+import {Router} from '@angular/router';
+
 
 @Component({
   selector: 'app-catalog',
@@ -17,16 +17,20 @@ export class Catalog {
   private readonly api = inject(BookApiService);
   readonly books = signal<PreviewBook[]>([]);
   readonly isLoading = signal<boolean>(false);
-  readonly query = signal('');
   readonly error = signal('');
+  private router = inject(Router);
+  readonly query = signal(decodeURIComponent(this.router.url.valueOf().slice(8) ?? ""));
+  readonly isSearchPage = computed(() => this.router.url.startsWith('/search'));
+  private offset = 12;
+
 
   searchBooks(): void {
     const query = this.query().trim();
+    this.isLoading.set(true);
     if (!query) {
       this.books.set([]);
       return;
     }
-    this.isLoading.set(true);
     this.api.searchBook(this.query()).subscribe({
       next: (results) => {
         this.books.set(results.items);
@@ -39,19 +43,52 @@ export class Catalog {
     });
   }
   startPage(): void {
-    this.error.set('');
-    this.isLoading.set(true);
-    this.api.postBooksRelevant([]).subscribe({
-      next: (results) => {
-        this.books.set(results.items ?? []);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        this.error.set('Error occurred while loading books');
-        this.books.set([]);
-        this.isLoading.set(false);
-      },
-    });
+    if(this.query()){
+      this.searchBooks()
+
+    }else {
+      this.error.set('');
+      this.isLoading.set(true);
+      setTimeout(() => {
+        this.api.postBooksRelevant([]).subscribe({
+          next: (results) => {
+            this.books.set(results.items ?? []);
+            this.isLoading.set(false);
+          },
+          error: (err) => {
+            this.error.set('Error occurred while loading books');
+            this.books.set([]);
+            this.isLoading.set(false);
+          },
+        });
+      }, 1000);
+    }
+
+
+  }
+
+
+  goToSearch(): void {
+    const query = this.query().trim();
+    if (!query) {
+      return;
+    }
+    this.searchBooks();
+    this.router.navigate([`/search/${query}`]);
+  }
+  loadMoreBooks(): void {
+    let newBooks: PreviewBook[] = []
+      this.api.searchBook(this.query() , this.offset).subscribe({
+        next: (results) => {
+          newBooks = results.items;
+          this.offset += newBooks.length;
+          this.books.update(currentBooks => [...currentBooks, ...newBooks]);
+        } , error: (err) => {
+          this.error.set('Error occurred while loading books');
+        }
+      })
+
+
   }
   ngOnInit() {
     this.startPage();
