@@ -3,7 +3,7 @@
     <div
       tabindex="0"
       role="button"
-      class="italic text-sm text-neutral-400 hover:text-white cursor-pointer"
+      class="italic text-sm text-neutral-400 hover:text-base-content cursor-pointer"
     >
       Öffnungszeiten
     </div>
@@ -28,7 +28,7 @@
     <div
       tabindex="0"
       role="button"
-      class="italic text-sm text-neutral-400 hover:text-white cursor-pointer"
+      class="italic text-sm text-neutral-400 hover:text-base-content cursor-pointer"
     >
       Kontakt
     </div>
@@ -78,6 +78,7 @@
     <button
       type="button"
       class="btn btn-sm btn-circle"
+      [disabled]="!query().trim()"
       (click)="searchBooks()"
     >
       →
