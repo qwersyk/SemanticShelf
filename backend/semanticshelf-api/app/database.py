@@ -114,6 +114,33 @@ def get_book(book_id):
         return book_from_row(connection, row)
 
 
+def get_genres_for_book(book_id, limit):
+    with engine.connect() as connection:
+        result = connection.execute(
+            text("""
+                 WITH source AS (SELECT embedding_vector, model_name
+                                 FROM embedding
+                                 WHERE book_id = :book_id
+                                   AND embedding_type = :embedding_type
+                                 ORDER BY created_at DESC
+                                 LIMIT 1)
+                 SELECT genre.id,
+                        genre.name,
+                        1 - (genre.embedding_vector OPERATOR(public.<=>) source.embedding_vector) AS probability
+                 FROM source
+                          JOIN genre ON genre.model_name = source.model_name
+                 ORDER BY probability DESC
+                 LIMIT :limit
+                 """),
+            {
+                "book_id": book_id,
+                "embedding_type": DEFAULT_EMBEDDING_TYPE,
+                "limit": limit,
+            }
+        )
+        return [dict(row) for row in result.mappings()]
+
+
 def get_relevant_books_for_book(book_id, offset, limit):
     with engine.connect() as connection:
         result = connection.execute(
