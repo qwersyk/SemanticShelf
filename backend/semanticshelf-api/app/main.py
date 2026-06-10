@@ -4,9 +4,9 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from requests import RequestException
 
-from app.database import get_book, get_relevant_books_for_book, get_relevant_books_for_history, search_books
+from app.database import get_book, get_genres_for_book, get_relevant_books_for_book, get_relevant_books_for_history, search_books
 from app.embedding import embed_query
-from app.schemas import BookDetail, BookListResponse, RelevantRequest
+from app.schemas import BookDetail, BookListResponse, GenreScore, RelevantRequest
 from app.settings import CORS_ALLOW_ALL
 
 app = FastAPI(title="SemanticShelf API")
@@ -80,6 +80,17 @@ def book_detail(book_id: int):
     if book is None:
         raise HTTPException(status_code=404, detail="Book not found")
     return book
+
+
+@app.get("/api/books/{book_id}/genres", response_model=list[GenreScore])
+def book_genres(
+        book_id: int,
+        limit: int = Query(default=5, ge=1, le=30),
+):
+    if get_book(book_id) is None:
+        raise HTTPException(status_code=404, detail="Book not found")
+
+    return get_genres_for_book(book_id, limit)
 
 
 @app.get("/api/books/{book_id}/relevant", response_model=BookListResponse)
