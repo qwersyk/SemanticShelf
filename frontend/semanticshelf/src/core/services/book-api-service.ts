@@ -14,7 +14,7 @@ export class BookApiService {
 
   searchBook(query: string , offset = 0 ,limit = 10) {
     const params = new HttpParams().set('q', query).set('offset', offset).set('limit', limit);
-    return this.http.get<PreviewBook[]>(`${this.baseUrl}/api/books/search`, {params: params});
+    return this.http.get<Relevant_return>(`${this.baseUrl}/api/books/search`, {params: params});
   }
   getBookById(id: number) {
     return this.http.get<Book>(`${this.baseUrl}/api/books/${id}`);
@@ -22,7 +22,7 @@ export class BookApiService {
   getBookByIdRelevant(id: number) {
     return this.http.get<PreviewBook[]>(`${this.baseUrl}/api/books/${id}/relevant`);
   }
-  postBooksRelevant(bookIds:number[] ,offset = 0 ,limit = 10 ) {
+  postBooksRelevant(bookIds:number[] ,offset = 0 ,limit = 12 ) {
     return this.http.post<Relevant_return>(`${this.baseUrl}/api/books/relevant`, {book_ids: bookIds , offset: offset , limit: limit});
   }
 
