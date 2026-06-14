@@ -1,1 +1,21 @@
 
+  <div class="flex gap-8 items-start">
+    <div class="w-[320px] h-[480px] overflow-hidden rounded-xl shrink-0">
+      <app-book-cover
+        [book]="book()"
+        class="block w-full h-full"
+      />
+    </div>
+
+    <div>
+      <h1>{{ book().title }}</h1>
+      <p>Author: {{ book().authors.toString()}}</p>
+      <p>Year: {{ book().year }}</p>
+      <p>Language: {{ book().language }}</p>
+      <p>Publisher: {{ book().publisher }}</p>
+      <p>Pages: {{ book().pages }}</p>
+      <p>ISBN13: {{ book().isbn13 }}</p>
+      <p>ID: {{ book().id }}</p>
+    </div>
+  </div>
+
