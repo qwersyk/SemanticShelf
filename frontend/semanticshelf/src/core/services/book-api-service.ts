@@ -12,7 +12,7 @@ export class BookApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = 'https://semanticshelfapidev.qsk.me/';
 
-  searchBook(query: string , offset = 0 ,limit = 10) {
+  searchBook(query: string , offset = 0 ,limit = 12) {
     const params = new HttpParams().set('q', query).set('offset', offset).set('limit', limit);
     return this.http.get<Relevant_return>(`${this.baseUrl}/api/books/search`, {params: params});
   }
