@@ -57,21 +57,17 @@ def test_search(monkeypatch):
 def test_search_with_author_filter(monkeypatch):
     captured = {}
 
-    def fake_embed_query(query):
-        captured["query"] = query
-        return "test-model", "[0.1,0.2]"
-
     def fake_search_books(vector, model, offset, limit, author_filter=None):
+        captured["vector"] = vector
         captured["author_filter"] = author_filter
         return [BOOK_SUMMARY], 1
 
-    monkeypatch.setattr(main, "embed_query", fake_embed_query)
     monkeypatch.setattr(main, "search_books", fake_search_books)
 
-    response = client.get("/api/books/search?q=python author:`Test Author`")
+    response = client.get("/api/books/search?q=author:`Test Author`")
 
     assert response.status_code == 200
-    assert captured["query"] == "python"
+    assert captured["vector"] is None
     assert captured["author_filter"] == "Test Author"
 
 

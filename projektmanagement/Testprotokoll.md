@@ -31,19 +31,19 @@ python3 -m pytest
 
 ## Backend - SemanticShelf API
 
-| Testfall                                | Erwartetes Ergebnis                      | Ergebnis                     | Status    | Datum      |
-|-----------------------------------------|------------------------------------------|------------------------------|-----------|------------|
-| GET /api/health                         | 200 OK und Statusmeldung                 | Funktioniert korrekt         | Bestanden | 29.05.2026 |
-| GET /api/books/search                   | Bücher werden zurückgegeben              | Erfolgreich                  | Bestanden | 02.06.2026 |
-| GET /api/books/search mit author-Filter | Suchtext und Autor-Filter werden genutzt | Erfolgreich                  | Bestanden | 03.06.2026 |
-| GET /api/books/search leer              | 400 Bad Request                          | Fehler korrekt zurückgegeben | Bestanden | 02.06.2026 |
-| GET /api/books/{id}                     | Buchdetails werden geliefert             | Erfolgreich                  | Bestanden | 02.06.2026 |
-| GET /api/books/{id} unbekannt           | 404 Not Found                            | Fehler korrekt zurückgegeben | Bestanden | 02.06.2026 |
-| GET /api/books/{id}/genres              | Genres werden geliefert                  | Erfolgreich                  | Bestanden | 10.06.2026 |
-| GET /api/books/{id}/genres unbekannt    | 404 Not Found                            | Fehler korrekt zurückgegeben | Bestanden | 10.06.2026 |
-| GET /api/books/{id}/relevant            | Ähnliche Bücher werden geliefert         | Erfolgreich                  | Bestanden | 02.06.2026 |
-| GET /api/books/{id}/relevant unbekannt  | 404 Not Found                            | Fehler korrekt zurückgegeben | Bestanden | 02.06.2026 |
-| POST /api/books/relevant                | Empfehlungen werden geliefert            | Erfolgreich                  | Bestanden | 02.06.2026 |
+| Testfall                                    | Erwartetes Ergebnis                            | Ergebnis                     | Status    | Datum      |
+|---------------------------------------------|------------------------------------------------|------------------------------|-----------|------------|
+| GET /api/health                             | 200 OK und Statusmeldung                       | Funktioniert korrekt         | Bestanden | 29.05.2026 |
+| GET /api/books/search                       | Bücher werden zurückgegeben                    | Erfolgreich                  | Bestanden | 02.06.2026 |
+| GET /api/books/search nur mit author-Filter | Bücher des angegebenen Autors werden geliefert | Erfolgreich                  | Bestanden | 15.06.2026 |
+| GET /api/books/search leer                  | 400 Bad Request                                | Fehler korrekt zurückgegeben | Bestanden | 02.06.2026 |
+| GET /api/books/{id}                         | Buchdetails werden geliefert                   | Erfolgreich                  | Bestanden | 02.06.2026 |
+| GET /api/books/{id} unbekannt               | 404 Not Found                                  | Fehler korrekt zurückgegeben | Bestanden | 02.06.2026 |
+| GET /api/books/{id}/genres                  | Genres werden geliefert                        | Erfolgreich                  | Bestanden | 10.06.2026 |
+| GET /api/books/{id}/genres unbekannt        | 404 Not Found                                  | Fehler korrekt zurückgegeben | Bestanden | 10.06.2026 |
+| GET /api/books/{id}/relevant                | Ähnliche Bücher werden geliefert               | Erfolgreich                  | Bestanden | 02.06.2026 |
+| GET /api/books/{id}/relevant unbekannt      | 404 Not Found                                  | Fehler korrekt zurückgegeben | Bestanden | 02.06.2026 |
+| POST /api/books/relevant                    | Empfehlungen werden geliefert                  | Erfolgreich                  | Bestanden | 02.06.2026 |
 
 ## Testausführung SemanticShelf API
 
@@ -54,7 +54,7 @@ cd backend/semanticshelf-api
 python3 -m pytest -q
 ```
 
-`Ergebnis: 11 passed in 0.73s`
+`Ergebnis: 11 passed in 0.60s`
 
 ## TODO Frontend-Tests
 
