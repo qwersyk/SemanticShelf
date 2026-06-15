@@ -25,6 +25,7 @@ export class Catalog {
 
 
   searchBooks(): void {
+    this.offset = 12;
     const query = this.query().trim();
     this.isLoading.set(true);
     if (!query) {

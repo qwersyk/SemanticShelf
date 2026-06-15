@@ -1,21 +1,87 @@
-
-  <div class="flex gap-8 items-start">
-    <div class="w-[320px] h-[480px] overflow-hidden rounded-xl shrink-0">
-      <app-book-cover
-        [book]="book()"
-        class="block w-full h-full"
-      />
-    </div>
-
-    <div>
-      <h1>{{ book().title }}</h1>
-      <p>Author: {{ book().authors.toString()}}</p>
-      <p>Year: {{ book().year }}</p>
-      <p>Language: {{ book().language }}</p>
-      <p>Publisher: {{ book().publisher }}</p>
-      <p>Pages: {{ book().pages }}</p>
-      <p>ISBN13: {{ book().isbn13 }}</p>
-      <p>ID: {{ book().id }}</p>
-    </div>
+<div
+  class="
+    mx-auto flex w-full max-w-5xl
+    flex-col items-center gap-10
+    px-6 py-16
+    md:flex-row md:items-start
+  "
+>
+  <div
+    class="
+      h-[420px] w-[280px]
+      shrink-0 overflow-hidden
+      rounded-2xl bg-base-200
+      sm:h-[480px] sm:w-[320px]
+    "
+  >
+    <app-book-cover
+      [book]="book()"
+      class="block h-full w-full"
+    />
   </div>
 
+  <div class="w-full max-w-xl">
+
+    <h1
+      class="
+        text-4xl font-extrabold leading-tight
+        sm:text-5xl
+      "
+    >
+      {{ book().title }}
+    </h1>
+
+    <p class="mt-4 text-lg text-neutral-500">
+      {{ book().authors| reverseAuthor }}
+    </p>
+
+    <div class="my-8 h-px bg-base-300"></div>
+
+    <div class="space-y-4 text-base">
+      <div class="flex justify-between gap-8">
+        <span class="text-neutral-400">Erscheinungsjahr</span>
+        <span class="text-right font-semibold">
+          {{ book().year || '–' }}
+        </span>
+      </div>
+
+      <div class="flex justify-between gap-8">
+        <span class="text-neutral-400">Sprache</span>
+        <span class="text-right font-semibold">
+          {{ book().language || '–' }}
+        </span>
+      </div>
+
+      <div class="flex justify-between gap-8">
+        <span class="text-neutral-400">Verlag</span>
+        <span class="text-right font-semibold">
+          {{ book().publisher || '–' }}
+        </span>
+      </div>
+
+      <div class="flex justify-between gap-8">
+        <span class="text-neutral-400">Seiten</span>
+        <span class="text-right font-semibold">
+          {{ book().pages || '–' }}
+        </span>
+      </div>
+
+      <div class="flex justify-between gap-8">
+        <span class="text-neutral-400">ISBN-13</span>
+        <span class="text-right font-mono font-semibold">
+          {{ book().isbn13 || '–'| isbn13  }}
+        </span>
+      </div>
+    </div>
+
+    <div class="flex justify-between items-center gap-8 mt-8 pt-4 border-t border-base-300">
+  <span class="text-sm text-neutral-400">
+    ID: {{ book().id }}
+  </span>
+
+      <button class="btn" (click)="openWebsite()">Zur Reservierung</button>
+    </div>
+
+
+  </div>
+</div>
