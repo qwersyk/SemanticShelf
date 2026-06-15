@@ -91,6 +91,10 @@ export class Catalog {
 
 
   }
+  back(): void {
+    this.offset = 12;
+    this.router.navigate(['/']);
+  }
   ngOnInit() {
     this.startPage();
   }

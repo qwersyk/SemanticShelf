@@ -18,7 +18,9 @@ export class BookComponent {
   readonly book = input.required<Book>();
   protected readonly pipe = pipe;
 
+
   openWebsite(): void {
     window.location.href = `https://htl-stp.bibbs.cc/search?view=detail&id=0.${this.book().id}`;
   }
+
 }
