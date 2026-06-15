@@ -46,7 +46,7 @@ def search_books(query_vector, model_name, offset, limit, author_filter=None):
                  FROM book
                           JOIN embedding ON embedding.book_id = book.id
                  WHERE embedding.embedding_type = :embedding_type
-                   AND embedding.model_name = :model_name
+                   AND (:model_name IS NULL OR embedding.model_name = :model_name)
                    AND (
                      :author_filter IS NULL
                          OR EXISTS (
@@ -68,12 +68,14 @@ def search_books(query_vector, model_name, offset, limit, author_filter=None):
                         book.year,
                         book.language,
                         book.cover_url,
-                        embedding.embedding_vector OPERATOR(public.<=>) CAST(:query_vector AS public.vector) AS score
+                        CASE WHEN :query_vector IS NULL THEN NULL
+                             ELSE embedding.embedding_vector OPERATOR(public.<=>) CAST(:query_vector AS public.vector)
+                        END AS score
                  FROM book
                      JOIN embedding
                  ON embedding.book_id = book.id
                  WHERE embedding.embedding_type = :embedding_type
-                   AND embedding.model_name = :model_name
+                   AND (:model_name IS NULL OR embedding.model_name = :model_name)
                    AND (
                      :author_filter IS NULL
                          OR EXISTS (
@@ -84,7 +86,7 @@ def search_books(query_vector, model_name, offset, limit, author_filter=None):
                            AND author.name ILIKE '%' || :author_filter || '%'
                      )
                      )
-                 ORDER BY score
+                 ORDER BY score NULLS LAST, book.title
                  OFFSET :offset LIMIT :limit
                  """),
             params
