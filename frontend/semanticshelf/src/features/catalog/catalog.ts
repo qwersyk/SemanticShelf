@@ -64,7 +64,7 @@ export class Catalog {
             this.isLoading.set(false);
           },
         });
-      }, 1000);
+      }, 500);
     }
 
 

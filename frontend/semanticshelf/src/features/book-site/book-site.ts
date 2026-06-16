@@ -69,6 +69,6 @@ export class BookSite {
   }
 
   back(): void {
-    this.location.back();
+    this.router.navigate(['/']);
   }
 }
