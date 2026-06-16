@@ -44,15 +44,17 @@ def search(
 ):
     clean_query, author_filter = parse_search_query(q)
 
-    if not clean_query:
+    if not clean_query and not author_filter:
         raise HTTPException(status_code=400, detail="Search query cannot be empty")
 
-    try:
-        model_name, query_vector = embed_query(clean_query)
-    except RequestException as error:
-        raise HTTPException(status_code=503, detail="Embedding API is unavailable") from error
-    except RuntimeError as error:
-        raise HTTPException(status_code=502, detail=str(error)) from error
+    model_name = query_vector = None
+    if clean_query:
+        try:
+            model_name, query_vector = embed_query(clean_query)
+        except RequestException as error:
+            raise HTTPException(status_code=503, detail="Embedding API is unavailable") from error
+        except RuntimeError as error:
+            raise HTTPException(status_code=502, detail=str(error)) from error
 
     books, total = search_books(query_vector, model_name, offset, limit, author_filter)
     return {
