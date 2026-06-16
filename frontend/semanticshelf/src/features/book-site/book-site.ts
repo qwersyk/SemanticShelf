@@ -29,6 +29,7 @@ export class BookSite {
     this.route.paramMap.subscribe(param => {
       const id = param.get("id")
       if(id){
+        window.scrollTo(0, 0);
         this.book_id.set(id);
         this.getBook();
         this.getRecommendedBooks();
