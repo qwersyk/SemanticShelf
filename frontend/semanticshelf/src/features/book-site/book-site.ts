@@ -38,7 +38,6 @@ export class BookSite {
   }
   getBook() {
     this.isLoading.set(true);
-    setTimeout(() =>{
       if (this.book_id()) {
         this.api.getBookById(Number(this.book_id())).subscribe({
           next: (book) => {
@@ -47,25 +46,21 @@ export class BookSite {
           },
           error: (err) => {
             this.error.set('Failure during loading the book');
-            this.isLoading.set(false);
           },
         });
       }
-    } , 500);
   }
   getRecommendedBooks() {
     this.isLoading.set(true);
-    setTimeout(() =>{
       if (this.book_id()) {
         this.api.postBooksRelevant([Number(this.book_id())]).subscribe({next: (books_return) => {
             this.recommendedBooks.set(books_return.items);
             this.isLoading.set(false);
           } , error: (err) => {
             this.error.set('Failure during loading recommended books');
-            this.isLoading.set(false);
           }})
       }
-    } , 500);
+
   }
 
   back(): void {
