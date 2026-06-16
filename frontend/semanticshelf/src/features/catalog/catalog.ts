@@ -32,6 +32,7 @@ export class Catalog {
     this.isLoading.set(true);
     if (!query) {
       this.books.set([]);
+      this.isLoading.set(false);
       return;
     }
     this.api.searchBook(this.query()).subscribe({
