@@ -89,7 +89,9 @@
 </div>
 
 @if (isLoading()) {
-  <p class="text-center mt-4">Loading...</p>
+  <div class="flex justify-center items-center">
+    <span class="loading loading-spinner loading-md"></span>
+  </div>
 } @else {
   <div class="flex flex-wrap justify-center gap-6 px-32 pb-16">
     @for (book of books(); track $index) {
