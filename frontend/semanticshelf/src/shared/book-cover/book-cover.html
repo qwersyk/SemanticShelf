@@ -1,8 +1,12 @@
 @if (book().cover_url) {
-  <img [src]="book().cover_url" [alt]="book().title" class="book-cover-image"/>
+  <img
+    [src]="book().cover_url"
+    [alt]="book().title"
+    class="book-cover-image block w-full h-full object-cover"
+  />
 } @else {
   <div
-    class="book-cover-fallback"
+    class="book-cover-fallback relative"
     [style.--cover-bg]="palette().bg"
     [style.--cover-fg]="palette().fg"
     [style.--cover-accent]="palette().accent"

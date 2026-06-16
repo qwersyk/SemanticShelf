@@ -25,6 +25,7 @@ export class Catalog {
 
 
   searchBooks(): void {
+    this.offset = 12;
     const query = this.query().trim();
     this.isLoading.set(true);
     if (!query) {
@@ -89,6 +90,10 @@ export class Catalog {
       })
 
 
+  }
+  back(): void {
+    this.offset = 12;
+    this.router.navigate(['/']);
   }
   ngOnInit() {
     this.startPage();

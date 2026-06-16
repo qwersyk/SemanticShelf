@@ -1,3 +1,6 @@
+@if(isSearchPage()){
+  <button class="absolute m-6 btn" (click)="back()">Zurück</button>
+}
 <div class="w-full flex justify-end gap-6 px-6 pt-4">
   <div class="dropdown dropdown-end">
     <div
@@ -60,9 +63,6 @@
       </span>
     </span>
   </h1>
-<div>
-
-</div>
   <label
     class="input input-bordered input-lg w-full max-w-xl rounded-full focus-within:outline-none focus-within:ring-0 font-semibold text-lg tracking-wide"
   >
