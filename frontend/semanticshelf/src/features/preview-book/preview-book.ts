@@ -18,7 +18,7 @@ export class PreviewBookComponent {
   clickBook(){
     this.historyService.addBook(this.book().id)
     this.router.navigate(['book' , this.book().id])
-    console.log("book #" + this.book().id + " added");
+
 
   }
 }
