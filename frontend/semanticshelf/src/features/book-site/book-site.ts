@@ -1,11 +1,9 @@
-import { Component, inject, input, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PreviewBook } from '../../core/models/preview-book';
 import { Book } from '../../core/models/book.model';
 import { BookComponent } from '../book/book';
 import { BookApiService } from '../../core/services/book-api-service';
-import { comment } from 'postcss';
-import { Location } from '@angular/common';
 import { PreviewBookComponent } from '../preview-book/preview-book';
 
 @Component({
@@ -22,7 +20,7 @@ export class BookSite {
   book = signal<Book | null>(null);
   private readonly route = inject(ActivatedRoute);
   private readonly api = inject(BookApiService);
-  private location = inject(Location);
+
   recommendedBooks= signal<PreviewBook[] | null>(null);
 
   ngOnInit() {
@@ -49,6 +47,7 @@ export class BookSite {
           },
           error: (err) => {
             this.error.set('Failure during loading the book');
+            this.isLoading.set(false);
           },
         });
       }
@@ -63,6 +62,7 @@ export class BookSite {
             this.isLoading.set(false);
           } , error: (err) => {
             this.error.set('Failure during loading recommended books');
+            this.isLoading.set(false);
           }})
       }
     } , 500);

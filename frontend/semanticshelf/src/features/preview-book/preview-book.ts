@@ -1,12 +1,12 @@
 import { Component, inject, input } from '@angular/core';
 import {PreviewBook} from '../../core/models/preview-book';
 import { BookCover } from '../../shared/book-cover/book-cover';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { HistoryService } from '../../core/services/history';
 
 @Component({
   selector: 'app-preview-book',
-  imports: [BookCover, RouterLink],
+  imports: [BookCover],
   templateUrl: './preview-book.html',
   styleUrl: './preview-book.scss',
 })
