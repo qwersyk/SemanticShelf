@@ -1,7 +1,7 @@
 export interface PreviewBook {
   id: number;
   title: string;
-  author: string[];
+  authors: string[];
   year: number;
   language: string;
   cover_url: string;
