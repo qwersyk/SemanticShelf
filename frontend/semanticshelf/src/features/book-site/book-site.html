@@ -1,4 +1,6 @@
-<button class="absolute m-6 btn" (click)="back()">Zurück</button>
+<button class="btn btn-sm sm:btn-md m-4 sm:m-6" (click)="back()">
+  Zurück
+</button>
 @if(book(); as currentBook){
   <app-book [book]="currentBook"></app-book>
 }

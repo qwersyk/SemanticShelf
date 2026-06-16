@@ -40,7 +40,6 @@ export class BookSite {
   }
   getBook() {
     this.isLoading.set(true);
-    setTimeout(() =>{
       if (this.book_id()) {
         this.api.getBookById(Number(this.book_id())).subscribe({
           next: (book) => {
@@ -52,11 +51,9 @@ export class BookSite {
           },
         });
       }
-    } , 500);
   }
   getRecommendedBooks() {
     this.isLoading.set(true);
-    setTimeout(() =>{
       if (this.book_id()) {
         this.api.postBooksRelevant([Number(this.book_id())]).subscribe({next: (books_return) => {
             this.recommendedBooks.set(books_return.items);
@@ -65,7 +62,7 @@ export class BookSite {
             this.error.set('Failure during loading recommended books');
           }})
       }
-    } , 500);
+
   }
 
   back(): void {
