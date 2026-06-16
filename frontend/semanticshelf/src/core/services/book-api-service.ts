@@ -3,6 +3,7 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {PreviewBook} from '../models/preview-book';
 import {Book} from '../models/book.model';
 import {Relevant_return} from '../models/relevant_return';
+import {environment} from '../../environments/environment';
 
 
 @Injectable({
@@ -10,7 +11,7 @@ import {Relevant_return} from '../models/relevant_return';
 })
 export class BookApiService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'https://semanticshelfapidev.qsk.me/';
+  private readonly baseUrl = environment.apiUrl;
 
   searchBook(query: string , offset = 0 ,limit = 12) {
     const params = new HttpParams().set('q', query).set('offset', offset).set('limit', limit);

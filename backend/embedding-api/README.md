@@ -1,3 +1,0 @@
-# Embedding API
-
-TODO
