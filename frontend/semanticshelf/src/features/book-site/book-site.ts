@@ -1,15 +1,16 @@
 import { Component, inject, input, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PreviewBook } from '../../core/models/preview-book';
 import { Book } from '../../core/models/book.model';
 import { BookComponent } from '../book/book';
 import { BookApiService } from '../../core/services/book-api-service';
 import { comment } from 'postcss';
 import { Location } from '@angular/common';
+import { PreviewBookComponent } from '../preview-book/preview-book';
 
 @Component({
   selector: 'app-book-site',
-  imports: [BookComponent],
+  imports: [BookComponent, PreviewBookComponent],
   templateUrl: './book-site.html',
   styleUrl: './book-site.scss',
 })
@@ -19,25 +20,45 @@ export class BookSite {
   protected router = inject(Router);
   readonly book_id = signal(decodeURIComponent(this.router.url.valueOf().slice(6) ?? ''));
   book = signal<Book | null>(null);
+  private readonly route = inject(ActivatedRoute);
   private readonly api = inject(BookApiService);
   private location = inject(Location);
+  recommendedBooks= signal<PreviewBook[] | null>(null);
 
   ngOnInit() {
-    this.getBook();
-
-
+    this.route.paramMap.subscribe(param => {
+      const id = param.get("id")
+      if(id){
+        this.book_id.set(id);
+        this.getBook();
+        this.getRecommendedBooks();
+      }
+    })
   }
-  getBook(){
-    if(this.book_id()){
-      this.api.getBookById(Number(this.book_id())).subscribe({ next: (book) => { this.book.set(book);console.log(book); } ,
-        error: err => {this.error.set("Failure during loading the book")}
+  getBook() {
+    if (this.book_id()) {
+      this.api.getBookById(Number(this.book_id())).subscribe({
+        next: (book) => {
+          this.book.set(book);
+          console.log(book);
+        },
+        error: (err) => {
+          this.error.set('Failure during loading the book');
+        },
       });
     }
   }
+  getRecommendedBooks() {
+    if (this.book_id()) {
+      this.api.postBooksRelevant([Number(this.book_id())]).subscribe({next: (books_return) => {
+        this.recommendedBooks.set(books_return.items)
+        } , error: (err) => {
+        this.error.set('Failure during loading recommended books');
+        }})
+    }
+  }
+
   back(): void {
     this.location.back();
   }
-
-
-
 }

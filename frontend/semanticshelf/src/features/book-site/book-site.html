@@ -2,3 +2,14 @@
 @if(book(); as currentBook){
   <app-book [book]="currentBook"></app-book>
 }
+@if (isLoading()) {
+  <p class="text-center mt-4">Loading...</p>
+} @else {
+  <div class="flex flex-wrap justify-center gap-6 px-32 pb-16">
+    @for (book of recommendedBooks(); track $index) {
+      <app-preview-book [book]="book"></app-preview-book>
+    } @empty {
+      <p>No books found</p>
+    }
+  </div>
+}
