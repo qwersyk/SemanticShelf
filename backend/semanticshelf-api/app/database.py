@@ -10,23 +10,28 @@ engine = create_engine(
 )
 
 
-def get_authors(connection, book_id):
-    return [row[0] for row in connection.execute(
-        text("""
-             SELECT author.name
-             FROM author
-                      JOIN book_author ON book_author.author_id = author.id
-             WHERE book_author.book_id = :book_id
-             ORDER BY author.name
-             """),
-        {"book_id": book_id}
-    )]
-
-
-def book_from_row(connection, row):
-    data = dict(row)
-    data["authors"] = get_authors(connection, data["id"])
-    return data
+def books_from_rows(connection, rows):
+    books = [dict(row) for row in rows]
+    book_ids = [book["id"] for book in books]
+    if book_ids:
+        authors = connection.execute(
+            text("""
+                 SELECT book_author.book_id, author.name
+                 FROM author
+                          JOIN book_author ON book_author.author_id = author.id
+                 WHERE book_author.book_id = ANY(:book_ids)
+                 ORDER BY author.name
+                 """),
+            {"book_ids": book_ids}
+        )
+        authors_map = {}
+        for book_id, name in authors:
+            authors_map.setdefault(book_id, []).append(name)
+    else:
+        authors_map = {}
+    for book in books:
+        book["authors"] = authors_map.get(book["id"], [])
+    return books
 
 
 def search_books(query_vector, model_name, offset, limit, author_filter=None):
@@ -91,7 +96,7 @@ def search_books(query_vector, model_name, offset, limit, author_filter=None):
                  """),
             params
         )
-        books = [book_from_row(connection, row) for row in result.mappings()]
+        books = books_from_rows(connection, result.mappings())
 
     return books, total
 
@@ -113,7 +118,7 @@ def get_book(book_id):
         if row is None:
             return None
 
-        return book_from_row(connection, row)
+        return books_from_rows(connection, [row])[0]
 
 
 def get_genres_for_book(book_id, limit):
@@ -175,7 +180,7 @@ def get_relevant_books_for_book(book_id, offset, limit):
                 "limit": limit,
             }
         )
-        return [book_from_row(connection, row) for row in result.mappings()]
+        return books_from_rows(connection, result.mappings())
 
 
 def get_random_books(offset, limit):
@@ -192,7 +197,7 @@ def get_random_books(offset, limit):
                 "limit": limit,
             }
         )
-        return [book_from_row(connection, row) for row in result.mappings()]
+        return books_from_rows(connection, result.mappings())
 
 
 def get_relevant_books_for_history(book_ids, offset, limit):
@@ -250,4 +255,4 @@ def get_relevant_books_for_history(book_ids, offset, limit):
                 "limit": limit,
             }
         )
-        return [book_from_row(connection, row) for row in result.mappings()]
+        return books_from_rows(connection, result.mappings())
