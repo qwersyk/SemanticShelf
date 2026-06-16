@@ -1,7 +1,8 @@
-import {Component, input} from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import {PreviewBook} from '../../core/models/preview-book';
 import { BookCover } from '../../shared/book-cover/book-cover';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { HistoryService } from '../../core/services/history';
 
 @Component({
   selector: 'app-preview-book',
@@ -11,4 +12,13 @@ import { RouterLink } from '@angular/router';
 })
 export class PreviewBookComponent {
   readonly book = input.required<PreviewBook>();
+  historyService = inject(HistoryService);
+  router = inject(Router);
+
+  clickBook(){
+    this.historyService.addBook(this.book().id)
+    this.router.navigate(['book' , this.book().id])
+
+
+  }
 }

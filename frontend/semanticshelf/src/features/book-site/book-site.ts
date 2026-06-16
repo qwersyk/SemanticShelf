@@ -29,6 +29,9 @@ export class BookSite {
     this.route.paramMap.subscribe(param => {
       const id = param.get("id")
       if(id){
+        this.book.set(null)
+        this.recommendedBooks.set(null)
+        window.scrollTo(0, 0);
         this.book_id.set(id);
         this.getBook();
         this.getRecommendedBooks();
@@ -36,29 +39,36 @@ export class BookSite {
     })
   }
   getBook() {
-    if (this.book_id()) {
-      this.api.getBookById(Number(this.book_id())).subscribe({
-        next: (book) => {
-          this.book.set(book);
-          console.log(book);
-        },
-        error: (err) => {
-          this.error.set('Failure during loading the book');
-        },
-      });
-    }
+    this.isLoading.set(true);
+    setTimeout(() =>{
+      if (this.book_id()) {
+        this.api.getBookById(Number(this.book_id())).subscribe({
+          next: (book) => {
+            this.book.set(book);
+            this.isLoading.set(false);
+          },
+          error: (err) => {
+            this.error.set('Failure during loading the book');
+          },
+        });
+      }
+    } , 500);
   }
   getRecommendedBooks() {
-    if (this.book_id()) {
-      this.api.postBooksRelevant([Number(this.book_id())]).subscribe({next: (books_return) => {
-        this.recommendedBooks.set(books_return.items)
-        } , error: (err) => {
-        this.error.set('Failure during loading recommended books');
-        }})
-    }
+    this.isLoading.set(true);
+    setTimeout(() =>{
+      if (this.book_id()) {
+        this.api.postBooksRelevant([Number(this.book_id())]).subscribe({next: (books_return) => {
+            this.recommendedBooks.set(books_return.items);
+            this.isLoading.set(false);
+          } , error: (err) => {
+            this.error.set('Failure during loading recommended books');
+          }})
+      }
+    } , 500);
   }
 
   back(): void {
-    this.location.back();
+    this.router.navigate(['/']);
   }
 }
