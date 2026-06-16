@@ -4,6 +4,7 @@ import {PreviewBook} from '../../core/models/preview-book';
 import {PreviewBookComponent} from '../preview-book/preview-book';
 import { LucideAngularModule,} from 'lucide-angular';
 import {Router} from '@angular/router';
+import {HistoryService } from '../../core/services/history';
 
 
 @Component({
@@ -22,6 +23,7 @@ export class Catalog {
   readonly query = signal(decodeURIComponent(this.router.url.valueOf().slice(8) ?? ""));
   readonly isSearchPage = computed(() => this.router.url.startsWith('/search'));
   private offset = 12;
+  historyService = inject(HistoryService);
 
 
   searchBooks(): void {
@@ -51,7 +53,7 @@ export class Catalog {
       this.error.set('');
       this.isLoading.set(true);
       setTimeout(() => {
-        this.api.postBooksRelevant([]).subscribe({
+        this.api.postBooksRelevant(this.historyService.getBooks()).subscribe({
           next: (results) => {
             this.books.set(results.items ?? []);
             this.isLoading.set(false);
