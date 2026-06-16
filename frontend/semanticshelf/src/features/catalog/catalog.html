@@ -1,111 +1,130 @@
-@if(isSearchPage()){
-  <button class="absolute m-6 btn" (click)="back()">Zurück</button>
-}
-<div class="w-full flex justify-end gap-6 px-6 pt-4">
-  <div class="dropdown dropdown-end">
-    <div
-      tabindex="0"
-      role="button"
-      class="italic text-sm text-neutral-400 hover:text-base-content cursor-pointer"
-    >
-      Öffnungszeiten
-    </div>
-
-    <div
-      tabindex="0"
-      class="dropdown-content card bg-base-100 z-50 w-80 shadow-xl border border-base-300"
-    >
-      <div class="card-body text-sm leading-relaxed">
-        <p class="font-bold text-base mb-2">Öffnungszeiten</p>
-
-        <p>Mo 11:20–13:10 und 15:50–18:35</p>
-        <p>Di 07:00–09:30 und 15:50–16:40</p>
-        <p>Mi 07:50–12:10</p>
-        <p>Do 10:30–12:10</p>
-        <p>Fr geschlossen</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="dropdown dropdown-end">
-    <div
-      tabindex="0"
-      role="button"
-      class="italic text-sm text-neutral-400 hover:text-base-content cursor-pointer"
-    >
-      Kontakt
-    </div>
-
-    <div
-      tabindex="0"
-      class="dropdown-content card bg-base-100 z-50 w-80 shadow-xl border border-base-300"
-    >
-      <div class="card-body text-sm leading-relaxed">
-        <p class="font-bold text-base mb-2">Kontakt</p>
-
-        <p>Mag. Helmut Freimann</p>
-        <p>helmut.freimann&#64;htlstp.ac.at</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="flex flex-col gap-8 items-center justify-center pt-28 pb-10 px-6">
-  <h1 class="text-center text-6xl font-extrabold">
-    Gönn da an guadn
-    <span class="text-rotate">
-      <span>
-        <span class="text-pink-500">Roman</span>
-        <span class="text-blue-500">Krimi</span>
-        <span class="text-purple-500">Fantasy</span>
-        <span class="text-red-900">Thriller</span>
-        <span>Klassiker</span>
-      </span>
-    </span>
-  </h1>
-  <label
-    class="input input-bordered input-lg w-full max-w-xl rounded-full focus-within:outline-none focus-within:ring-0 font-semibold text-lg tracking-wide"
-  >
-    <input
-      type="text"
-      placeholder="Schau ma moi, wos ma findn..."
-      class="grow placeholder:font-light placeholder:text-neutral-400"
-      [value]="query()"
-      (input)="query.set($any($event.target).value)"
-      (keydown.enter)=goToSearch()
-
-    />
-
+<div class="relative">
+  @if (isSearchPage()) {
     <button
-      type="button"
-      class="btn btn-sm btn-circle"
-      [disabled]="!query().trim()"
-      (click)=goToSearch()
+      class="absolute left-4 top-4 z-10 btn btn-sm sm:left-6 sm:top-6 sm:btn-md"
+      (click)="back()"
     >
-      →
+      ← <span class="hidden sm:inline">Zurück</span>
     </button>
-  </label>
+  }
 
+  <div class="w-full flex justify-end gap-4 sm:gap-6 px-4 sm:px-6 pt-4">
+    <div class="dropdown dropdown-end">
+      <div
+        tabindex="0"
+        role="button"
+        class="italic text-xs sm:text-sm text-neutral-400 hover:text-base-content cursor-pointer"
+      >
+        Öffnungszeiten
+      </div>
+
+      <div
+        tabindex="0"
+        class="dropdown-content card bg-base-100 z-50 w-72 sm:w-80 shadow-xl border border-base-300"
+      >
+        <div class="card-body text-sm leading-relaxed">
+          <p class="font-bold text-base mb-2">Öffnungszeiten</p>
+
+          <p>Mo 11:20–13:10 und 15:50–18:35</p>
+          <p>Di 07:00–09:30 und 15:50–16:40</p>
+          <p>Mi 07:50–12:10</p>
+          <p>Do 10:30–12:10</p>
+          <p>Fr geschlossen</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="dropdown dropdown-end">
+      <div
+        tabindex="0"
+        role="button"
+        class="italic text-xs sm:text-sm text-neutral-400 hover:text-base-content cursor-pointer"
+      >
+        Kontakt
+      </div>
+
+      <div
+        tabindex="0"
+        class="dropdown-content card bg-base-100 z-50 w-72 sm:w-80 shadow-xl border border-base-300"
+      >
+        <div class="card-body text-sm leading-relaxed">
+          <p class="font-bold text-base mb-2">Kontakt</p>
+
+          <p>Mag. Helmut Freimann</p>
+          <p class="break-all">helmut.freimann&#64;htlstp.ac.at</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-8 items-center justify-center pt-16 sm:pt-24 lg:pt-28 pb-10 px-4 sm:px-6">
+    <h1 class="text-center text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight">
+      Gönn da an guadn
+      <span class="text-rotate">
+        <span>
+          <span class="text-pink-500">Roman</span>
+          <span class="text-blue-500">Krimi</span>
+          <span class="text-purple-500">Fantasy</span>
+          <span class="text-red-900">Thriller</span>
+          <span>Klassiker</span>
+        </span>
+      </span>
+    </h1>
+
+    <label
+      class="
+        input input-bordered input-md sm:input-lg
+        w-full max-w-xl rounded-full
+        focus-within:outline-none focus-within:ring-0
+        font-semibold text-base sm:text-lg tracking-wide
+      "
+    >
+      <input
+        type="text"
+        placeholder="Schau ma moi, wos ma findn..."
+        class="grow min-w-0 placeholder:font-light placeholder:text-neutral-400"
+        [value]="query()"
+        (input)="query.set($any($event.target).value)"
+        (keydown.enter)="goToSearch()"
+      />
+
+      <button
+        type="button"
+        class="btn btn-sm btn-circle"
+        [disabled]="!query().trim()"
+        (click)="goToSearch()"
+      >
+        →
+      </button>
+    </label>
+  </div>
 </div>
 
 @if (isLoading()) {
-  <div class="flex justify-center items-center">
+  <div class="flex min-h-40 justify-center items-center">
     <span class="loading loading-spinner loading-md"></span>
   </div>
 } @else {
-  <div class="flex flex-wrap justify-center gap-6 px-32 pb-16">
-    @for (book of books(); track $index) {
-      <app-preview-book [book]="book"></app-preview-book>
-    } @empty {
-      <p>No books found</p>
-    }
-  </div>
-    @if(isSearchPage()){
-      <div class="flex justify-center">
-        <button (click)="loadMoreBooks()" class="btn hover:text-base-content ">Noch</button>
+  <section class="px-4 sm:px-8 lg:px-16 xl:px-32 pb-16">
+    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 justify-items-center">
+      @for (book of books(); track book.id) {
+        <app-preview-book [book]="book"></app-preview-book>
+      } @empty {
+        <p class="col-span-full text-center text-neutral-400">
+          No books found
+        </p>
+      }
+    </div>
+
+    @if (isSearchPage()) {
+      <div class="flex justify-center mt-10">
+        <button
+          class="btn hover:text-base-content"
+          (click)="loadMoreBooks()"
+        >
+          Noch
+        </button>
       </div>
     }
-
+  </section>
 }
-
-

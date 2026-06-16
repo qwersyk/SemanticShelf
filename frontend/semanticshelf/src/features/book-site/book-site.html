@@ -1,19 +1,29 @@
 <button class="btn btn-sm sm:btn-md m-4 sm:m-6" (click)="back()">
   Zurück
 </button>
-@if(book(); as currentBook){
+
+@if (book(); as currentBook) {
   <app-book [book]="currentBook"></app-book>
 }
+
 @if (isLoading()) {
-  <div class="flex justify-center items-center">
+  <div class="flex min-h-40 items-center justify-center">
     <span class="loading loading-spinner loading-md"></span>
   </div>
 } @else {
-  <div class="flex flex-wrap justify-center gap-6 px-32 pb-16">
-    @for (book of recommendedBooks(); track $index) {
-      <app-preview-book [book]="book"></app-preview-book>
-    } @empty {
-      <p>No books found</p>
-    }
-  </div>
+  <section class="px-4 sm:px-8 lg:px-16 xl:px-32 pb-16 ">
+    <h2 class="mb-6 text-center text-2xl sm:text-3xl font-bold">
+      Empfehlungen
+    </h2>
+
+    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 justify-items-center">
+      @for (book of recommendedBooks(); track book.id) {
+        <app-preview-book [book]="book"></app-preview-book>
+      } @empty {
+        <p class="col-span-full text-center text-neutral-400">
+          No books found
+        </p>
+      }
+    </div>
+  </section>
 }
