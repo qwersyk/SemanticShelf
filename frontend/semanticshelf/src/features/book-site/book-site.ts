@@ -45,7 +45,7 @@ export class BookSite {
             this.isLoading.set(false);
           },
           error: (err) => {
-            this.error.set('Failure during loading the book');
+            this.router.navigate(['/404']);
           },
         });
       }
