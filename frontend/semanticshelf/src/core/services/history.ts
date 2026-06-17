@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Book } from '../models/book.model';
-import { filter } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
