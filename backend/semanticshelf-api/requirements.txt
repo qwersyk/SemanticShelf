@@ -4,6 +4,7 @@ python-dotenv
 requests
 SQLAlchemy
 uvicorn
+torch
 
 pytest
 httpx
