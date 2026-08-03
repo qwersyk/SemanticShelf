@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine, text
 
+from app.ml.predictor import predict_book_genres
 from app.settings import DATABASE_SCHEMA, DATABASE_URL
 
 DEFAULT_EMBEDDING_TYPE = "title_author"
@@ -123,29 +124,22 @@ def get_book(book_id):
 
 def get_genres_for_book(book_id, limit):
     with engine.connect() as connection:
-        result = connection.execute(
+        row = connection.execute(
             text("""
-                 WITH source AS (SELECT embedding_vector, model_name
-                                 FROM embedding
-                                 WHERE book_id = :book_id
-                                   AND embedding_type = :embedding_type
-                                 ORDER BY created_at DESC
-                                 LIMIT 1)
-                 SELECT genre.id,
-                        genre.name,
-                        1 - (genre.embedding_vector OPERATOR(public.<=>) source.embedding_vector) AS probability
-                 FROM source
-                          JOIN genre ON genre.model_name = source.model_name
-                 ORDER BY probability DESC
-                 LIMIT :limit
+                 SELECT embedding_vector::text AS vec
+                 FROM embedding
+                 WHERE book_id = :book_id
+                   AND embedding_type = :embedding_type
+                 ORDER BY created_at DESC
+                 LIMIT 1
                  """),
-            {
-                "book_id": book_id,
-                "embedding_type": DEFAULT_EMBEDDING_TYPE,
-                "limit": limit,
-            }
-        )
-        return [dict(row) for row in result.mappings()]
+            {"book_id": book_id, "embedding_type": DEFAULT_EMBEDDING_TYPE}
+        ).mappings().first()
+
+    if not row or not row["vec"]:
+        return []
+
+    return predict_book_genres(row["vec"], limit)
 
 
 def get_relevant_books_for_book(book_id, offset, limit):
@@ -157,8 +151,8 @@ def get_relevant_books_for_book(book_id, offset, limit):
                                  WHERE book_id = :book_id
                                    AND embedding_type = :embedding_type
                                  ORDER BY created_at DESC
-                     LIMIT 1
-                     )
+                                 LIMIT 1
+                                 )
                  SELECT book.id,
                         book.title,
                         book.year,
@@ -167,7 +161,7 @@ def get_relevant_books_for_book(book_id, offset, limit):
                         embedding.embedding_vector OPERATOR(public.<=>) source.embedding_vector AS score
                  FROM source
                           JOIN embedding ON embedding.embedding_type = :embedding_type
-                     AND embedding.model_name = source.model_name
+                      AND embedding.model_name = source.model_name
                           JOIN book ON book.id = embedding.book_id
                  WHERE book.id != :book_id
                  ORDER BY score
