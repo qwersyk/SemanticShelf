@@ -40,7 +40,7 @@ BAD_DESCRIPTION = re.compile(r'(?:als (?:ki|sprachmodell)|es tut mir leid|entsch
 def has_failure_message(value):
     # Book titles such as „Ich kann nicht schweigen“ are not assistant refusals.
     prose=re.sub(r'„[^“]*“|«[^»]*»|"[^"]*"','',value)
-    return bool(BAD_DESCRIPTION.search(prose))
+    return bool(BAD_DESCRIPTION.search(prose) or re.search(r'(?:bibliografischen|vorliegenden|verfügbaren) Angaben.{0,120}(?:nicht|keine)',prose,re.I|re.S))
 
 def fallback(book):
     # Only bibliographic facts; never invent plot, topics, or audience.

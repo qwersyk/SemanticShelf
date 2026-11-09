@@ -14,6 +14,7 @@ def test_reject_invalid_isbn(value):assert not valid_isbn(value)
  'Weitere Angaben zum konkreten Werk oder zu seinem Inhalt liegen nicht vor.',
  'Die vorliegenden bibliografischen Angaben erlauben keine sichere Bestimmung der Ausgabe.',
  'Als KI habe ich keine zuverlässige Beschreibung.',
+ 'Aus den bibliografischen Angaben lässt sich die Handlung nicht verlässlich bestimmen.',
 ])
 def test_reject_public_failure_messages(text):
     with pytest.raises(ValueError):validate_description({'description_de':text,'topics':[],'recognition':'metadata_only'})
