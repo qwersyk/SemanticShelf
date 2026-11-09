@@ -7,7 +7,10 @@ from requests import RequestException
 from app.database import get_book, get_genres_for_book, get_relevant_books_for_book, get_relevant_books_for_history, search_books
 from app.embedding import embed_query
 from app.schemas import BookDetail, BookListResponse, GenreScore, RelevantRequest
-from app.settings import CORS_ALLOW_ALL
+from app.settings import CORS_ALLOW_ALL, SEARCH_PROVIDER
+
+if SEARCH_PROVIDER == 'openai':
+    from app.openai_catalog import get_book, get_relevant_books_for_book, get_relevant_books_for_history, search_books
 
 app = FastAPI(title="SemanticShelf API")
 
@@ -38,7 +41,7 @@ def health():
 
 @app.get("/api/books/search", response_model=BookListResponse)
 def search(
-        q: str = Query(..., min_length=1),
+        q: str = Query(..., min_length=1, max_length=2000),
         offset: int = Query(default=0, ge=0),
         limit: int = Query(default=10, ge=1, le=50),
 ):
@@ -48,15 +51,22 @@ def search(
         raise HTTPException(status_code=400, detail="Search query cannot be empty")
 
     model_name = query_vector = None
-    if clean_query:
+    if clean_query and not (SEARCH_PROVIDER == 'openai' and re.fullmatch(r'(?:\d{13}|\d{9}[\dXx])',re.sub(r'[-\s]','',clean_query))):
         try:
             model_name, query_vector = embed_query(clean_query)
         except RequestException as error:
-            raise HTTPException(status_code=503, detail="Embedding API is unavailable") from error
+            if SEARCH_PROVIDER == 'openai':
+                # Keep exact/lexical search available during provider outages or quota exhaustion.
+                model_name = query_vector = None
+            else:
+                raise HTTPException(status_code=503, detail="Embedding API is unavailable") from error
         except RuntimeError as error:
             raise HTTPException(status_code=502, detail=str(error)) from error
 
-    books, total = search_books(query_vector, model_name, offset, limit, author_filter)
+    if SEARCH_PROVIDER == 'openai':
+        books, total = search_books(query_vector, model_name, offset, limit, author_filter, query=clean_query)
+    else:
+        books, total = search_books(query_vector, model_name, offset, limit, author_filter)
     return {
         "items": books,
         "total": total,

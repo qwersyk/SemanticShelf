@@ -1,0 +1,116 @@
+SemanticShelf catalog maintenance
+
+Purpose
+German annotations primarily support retrieval. Display only source-backed or manual
+annotations without a review flag. Model-only and metadata-only drafts remain useful
+for indexing but are not presented as verified public book summaries.
+
+Never edit README files as part of maintenance. Never put credentials, database dumps,
+exports, or runtime environment files in Git. Original book IDs, metadata and E5 vectors
+are preserved. The E5 genre classifier must never receive OpenAI vectors, even if an
+OpenAI model is shortened to 384 dimensions.
+
+Runtime dependencies
+Python 3.12+, requests, SQLAlchemy, psycopg2-binary. All are in backend/scripts/requirements.txt.
+DATABASE_URL and OPENAI_API_KEY must come from protected environment configuration.
+The SQL migration uses the existing semanticshelf schema and pgvector extension.
+
+Initial deployment
+1. Take a custom-format pg_dump and verify pg_restore --list. Keep a protected copy.
+2. python backend/scripts/catalog.py init --run YYYY-MM-editorial --budget 14
+3. Preview a heterogeneous sample with --preview --ids 24,807,... --model gpt-6-luna.
+   A Terra comparison can use --model gpt-6.1-terra. Previews are paid and journaled.
+4. python backend/scripts/catalog.py describe --run YYYY-MM-editorial --workers 12
+   Default batches contain 8 books; generation, validation and history remain per book.
+5. python backend/scripts/catalog.py describe --run YYYY-MM-editorial --research
+   --limit 700 --workers 8 --research-budget 8
+6. python backend/scripts/catalog.py embed --run YYYY-MM-editorial
+7. Validate coverage, descriptions, retrieval and recommendations before rollout.
+8. Set backend SEARCH_PROVIDER=openai, OPENAI_EMBEDDING_MODEL=text-embedding-3-large,
+   and OPENAI_API_KEY. Index and query dimensions are 1536. Deploy the dev branch.
+
+Recurring improvement
+Use a NEW --run ID and the budget explicitly authorized for that period. init never
+silently raises an existing run budget. report shows charged amounts plus unresolved
+reservations. If a model price changes, update PRICES before making paid calls.
+
+describe processes missing or changed metadata only; it preserves manual locks.
+describe --research selects needs_review, prioritizing identifiable technical works.
+Research never upgrades certainty merely because a model sounds confident. Source-backed
+means the research response matched the work and supplied actual consulted URLs. This
+remains machine-assisted verification, not a guarantee or a human review certificate.
+Review evidence_summary and the referenced page before relying on an individual claim.
+
+The request hash caches the exact model/prompt/metadata combination across runs.
+An unchanged research request returns its previous result at no additional API charge.
+For a deliberate fresh attempt, change --revision (e.g. de-catalog-2026-12) or model.
+Use revisions deliberately; they invalidate paid response cache keys. Changing a run ID
+alone does not discard the cache. Re-run embed after improvements: only changed versions,
+metadata, document formats or models are indexed again.
+
+For weak cases inspect:
+ SELECT * FROM semanticshelf.catalog_review_queue
+ WHERE needs_review ORDER BY confidence, id;
+Fields: basis (model_knowledge, metadata_only, source_backed, manual), confidence 0–3,
+needs_review, review_reason, sources, version_id, model and prompt_version.
+Confidence is an ordinal evidence rubric, NOT a probability of factual correctness.
+Book metadata remains verbatim; suspicious ISBNs/authors are flagged, not blindly fixed.
+ISBN is never the sole identity key: this catalog has shared ISBNs across distinct volumes.
+
+Manual corrections
+Put the corrected German annotation in a UTF-8 text file, then:
+ python backend/scripts/catalog.py manual --ids 24 --description-file corrected.txt
+ python backend/scripts/catalog.py embed --ids 24 --run YYYY-MM-editorial
+This records a manual version and locks it against AI overwrites. Direct SQL edits of
+book.description are captured by a trigger too; they invalidate stale vectors. Re-run
+embed after such edits. Unlocking a manual annotation is a deliberate administrative act,
+never part of an automatic cleanup pass.
+
+Request accounting and recovery
+Budget checks serialize on catalog_run before network requests. Maximum uncached input,
+maximum output and one search call plus retrieval allowance are reserved. Successful
+usage replaces the reservation with computed cost. A transport timeout keeps its reserve
+because it might have been billed. Ambiguous requests are not automatically resent.
+Pending requests from killed workers likewise retain conservative reservations. Inspect
+the ledger and reconcile against provider usage before deciding to retry them. Explicit
+new revisions can retry a failed editorial pass while keeping the old accounting record.
+Do not run two identical processing jobs concurrently; duplicate paid requests are cached,
+but deliberate orchestration should remain simple. Small worker pools use the available
+API rate limits; an API error stops further scheduling rather than burning repeated calls.
+
+Migration timing
+Apply the final migration only when older generation workers have stopped. The manual
+edit trigger recognizes writes carrying the transaction-local enrichment_writer setting;
+workers from older code do not set it. All current workers set it before updating a book.
+
+Portable exports and restore
+ python backend/scripts/catalog.py export --output /protected/catalog-export
+Creates a consistent JSONL snapshot: books with authors and active enrichment,
+description history, both vectors with exact texts/hashes/model/dimensions, runs and
+request cache/accounting. manifest.json provides row counts and SHA-256 checksums.
+These files contain no API key or database password. Keep exports outside the repository.
+
+To restore into an EMPTY PostgreSQL database with pgvector available:
+ DATABASE_URL=... python backend/scripts/catalog_import.py /protected/catalog-export
+The importer validates checksums/counts and restores stable IDs, authors, active versions,
+manual locks, history, vectors and accounting in a transaction. It refuses nonempty book
+tables. It does not restore the legacy E5 genre model data; keep the original full pg_dump
+for that. For a different database engine, use the same JSONL values and parse vectors
+from their numeric JSON-array strings. A model change requires new embeddings, not new
+annotations. A database move with unchanged model/text requires no paid regeneration.
+
+Validation
+Local pure validation: PYTHONPATH=backend/scripts pytest backend/scripts/tests/test_catalog_common.py
+Database integration tests require an isolated clone, CATALOG_TEST_DATABASE=true and a
+DATABASE_URL whose name contains test. Never enable this flag on the production database.
+Run backend API tests with the existing API dependencies (including torch for old genres).
+evaluate_search.py runs a fixed 40-case diagnostic suite; its labels are not independently
+human graded. Report individual examples and Hit@5/10 as diagnostics, not a general quality
+percentage. Keep a held-out, human-reviewed query set before wider retrieval tuning.
+
+Initial hosted runtime
+Protected server work directory: /root/semanticshelf-enrichment
+Original backup: /root/semanticshelf-backups/before-openai-20261109.dump
+The runtime environment file contains secrets; do not print or include it in reports.
+Detached enrichment containers use this persisted directory. The normal application uses
+Dokploy; preserve existing environment variables and deployment configuration when updating.

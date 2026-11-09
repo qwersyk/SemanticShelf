@@ -1,0 +1,494 @@
+[
+  {
+    "category": "plot",
+    "query": "Junge besucht eine Zauberschule und kämpft gegen einen dunklen Zauberer",
+    "relevant_ids": [
+      807,
+      808,
+      809,
+      810,
+      811,
+      812,
+      813,
+      814,
+      1032,
+      5331,
+      7636
+    ]
+  },
+  {
+    "category": "plot",
+    "query": "Ein Gefangener lernt in der Isolation Schach und spielt später auf einem Schiff",
+    "relevant_ids": [
+      24,
+      5986
+    ]
+  },
+  {
+    "category": "plot",
+    "query": "Ein Deichgraf kämpft gegen Sturmfluten und den Aberglauben im Dorf",
+    "relevant_ids": [
+      25,
+      6325,
+      6359
+    ]
+  },
+  {
+    "category": "plot",
+    "query": "Eine wohlhabende Frau kehrt zurück und verlangt Rache für vergangenes Unrecht",
+    "relevant_ids": [
+      910,
+      3098,
+      7694
+    ]
+  },
+  {
+    "category": "plot",
+    "query": "Gregor Samsa erwacht als Ungeziefer und entfremdet sich seiner Familie",
+    "relevant_ids": [
+      1081,
+      4087,
+      6170,
+      6534,
+      7081
+    ]
+  },
+  {
+    "category": "plot",
+    "query": "Ein junger Mann erschafft ein künstliches Lebewesen und muss Verantwortung übernehmen",
+    "relevant_ids": [
+      7736,
+      7737,
+      7738,
+      7739,
+      7740,
+      7741,
+      7742,
+      7743,
+      7744,
+      7745,
+      7746,
+      7747,
+      7748,
+      7749,
+      7750,
+      7792,
+      7793,
+      7794,
+      7795,
+      7796,
+      7797,
+      7798,
+      7815,
+      7816,
+      7817,
+      7818,
+      7819,
+      7820,
+      7821,
+      7822
+    ]
+  },
+  {
+    "category": "plot",
+    "query": "Ein totalitärer Staat überwacht seine Bürger und manipuliert ihre Sprache",
+    "relevant_ids": [
+      790,
+      5064
+    ]
+  },
+  {
+    "category": "plot",
+    "query": "Ein Mädchen versteckt sich während der nationalsozialistischen Verfolgung und schreibt Tagebuch",
+    "relevant_ids": [
+      89,
+      7571
+    ]
+  },
+  {
+    "category": "plot",
+    "query": "Wissenschaftler verstecken gefährliches Wissen in einer psychiatrischen Klinik",
+    "relevant_ids": [
+      858,
+      1318,
+      1323,
+      3102,
+      3103
+    ]
+  },
+  {
+    "category": "plot",
+    "query": "Ein Mann wird angeklagt ohne seine Schuld und das Verfahren zu verstehen",
+    "relevant_ids": [
+      506
+    ]
+  },
+  {
+    "category": "plot",
+    "query": "Ein Unterrichtsexperiment zeigt wie autoritäre Bewegungen entstehen",
+    "relevant_ids": [
+      1090,
+      5280
+    ]
+  },
+  {
+    "category": "plot",
+    "query": "Ein Mönch untersucht rätselhafte Todesfälle in einem mittelalterlichen Kloster",
+    "relevant_ids": [
+      3130
+    ]
+  },
+  {
+    "category": "plot",
+    "query": "Ein junger Mensch sucht spirituelle Erkenntnis und begegnet einem Fährmann",
+    "relevant_ids": [
+      400,
+      6749,
+      7550
+    ]
+  },
+  {
+    "category": "plot",
+    "query": "Ein Soldat erlebt die Schrecken des Ersten Weltkriegs",
+    "relevant_ids": [
+      505,
+      7639
+    ]
+  },
+  {
+    "category": "plot",
+    "query": "Ein Mann mit außergewöhnlichem Geruchssinn sucht den vollkommenen Duft",
+    "relevant_ids": [
+      6726
+    ]
+  },
+  {
+    "category": "plot",
+    "query": "Ein kleiner Reisender besucht verschiedene Planeten und begegnet einem Fuchs",
+    "relevant_ids": [
+      1294,
+      1857,
+      5341
+    ]
+  },
+  {
+    "category": "topic",
+    "query": "Bücher über relationale Datenbanken und SQL",
+    "relevant_ids": [
+      873,
+      1335,
+      2248,
+      2915,
+      3241,
+      3242,
+      3874,
+      4497,
+      4498,
+      5051,
+      5654,
+      5719
+    ]
+  },
+  {
+    "category": "topic",
+    "query": "Datenbanken mit FileMaker Pro 8.5 verwalten",
+    "relevant_ids": [
+      12
+    ]
+  },
+  {
+    "category": "topic",
+    "query": "Programmieren mit Visual Basic im Microsoft .NET Framework",
+    "relevant_ids": [
+      11,
+      1230
+    ]
+  },
+  {
+    "category": "topic",
+    "query": "Grundlagen der Java Programmierung",
+    "relevant_ids": [
+      417,
+      1232,
+      1236,
+      1239,
+      1241,
+      1245,
+      1246,
+      1251,
+      2343,
+      2366,
+      2390,
+      2750,
+      2950,
+      3127,
+      3212,
+      3486,
+      3663,
+      3959,
+      4241,
+      4242,
+      4244,
+      4339,
+      4342,
+      4343,
+      4813,
+      4889,
+      4981,
+      4982,
+      4983,
+      5045,
+      5046,
+      5316,
+      5384,
+      5523,
+      5540,
+      5814,
+      5891
+    ]
+  },
+  {
+    "category": "topic",
+    "query": "Python mit Excel für Datenanalyse und Automatisierung",
+    "relevant_ids": [
+      6790
+    ]
+  },
+  {
+    "category": "topic",
+    "query": "Elektrische Gleichstromnetzwerke und elektrisches Feld verstehen",
+    "relevant_ids": [
+      194,
+      2165,
+      5467,
+      5739,
+      6655,
+      6769
+    ]
+  },
+  {
+    "category": "topic",
+    "query": "Magnetische Felder und Wechselstrom berechnen",
+    "relevant_ids": [
+      195,
+      5691
+    ]
+  },
+  {
+    "category": "topic",
+    "query": "Erneuerbare Energiequellen und Klimaschutz",
+    "relevant_ids": [
+      5906,
+      7085
+    ]
+  },
+  {
+    "category": "topic",
+    "query": "SQL Abfragen mit schwierigen Übungsaufgaben lernen",
+    "relevant_ids": [
+      873
+    ]
+  },
+  {
+    "category": "topic",
+    "query": "Technische Prüfung der elektromagnetischen Störfestigkeit von Fahrzeugkomponenten",
+    "relevant_ids": [
+      4900,
+      4940,
+      4941,
+      4942,
+      4943,
+      4944,
+      4945,
+      4946
+    ]
+  },
+  {
+    "category": "exact_title",
+    "query": "Schachnovelle",
+    "relevant_ids": [
+      24,
+      5986
+    ]
+  },
+  {
+    "category": "exact_title",
+    "query": "Harry Potter und der Stein der Weisen",
+    "relevant_ids": [
+      807
+    ]
+  },
+  {
+    "category": "exact_title",
+    "query": "Geist und Kosmos",
+    "relevant_ids": [
+      21
+    ]
+  },
+  {
+    "category": "exact_title",
+    "query": "Effi Briest",
+    "relevant_ids": [
+      6074,
+      7697,
+      7698,
+      7699,
+      7700,
+      7701,
+      7702,
+      7703,
+      7704,
+      7705,
+      7706,
+      7707,
+      7708,
+      7709,
+      7710,
+      7711,
+      7712,
+      7713,
+      7714,
+      7715,
+      7716,
+      7717,
+      7718,
+      7719,
+      7720,
+      7721,
+      7722,
+      7723,
+      7724,
+      7725,
+      7726,
+      7727,
+      7728,
+      7729,
+      7730,
+      7731,
+      7732
+    ]
+  },
+  {
+    "category": "exact_title",
+    "query": "Datenbankmanagement mit FileMaker Pro 8.5",
+    "relevant_ids": [
+      12
+    ]
+  },
+  {
+    "category": "typo",
+    "query": "harry poter",
+    "relevant_ids": [
+      807,
+      808,
+      809,
+      810,
+      811,
+      812,
+      813,
+      814,
+      1032,
+      5331,
+      7636
+    ]
+  },
+  {
+    "category": "typo",
+    "query": "Schachnovelle Stefan Zweg",
+    "relevant_ids": [
+      24,
+      5986
+    ]
+  },
+  {
+    "category": "typo",
+    "query": "Frankenstain",
+    "relevant_ids": [
+      7736,
+      7737,
+      7738,
+      7739,
+      7740,
+      7741,
+      7742,
+      7743,
+      7744,
+      7745,
+      7746,
+      7747,
+      7748,
+      7749,
+      7750,
+      7792,
+      7793,
+      7794,
+      7795,
+      7796,
+      7797,
+      7798,
+      7815,
+      7816,
+      7817,
+      7818,
+      7819,
+      7820,
+      7821,
+      7822
+    ]
+  },
+  {
+    "category": "typo",
+    "query": "Der Schimelreiter",
+    "relevant_ids": [
+      25,
+      6325,
+      6359
+    ]
+  },
+  {
+    "category": "typo",
+    "query": "Filemaker Datenbankmanagment",
+    "relevant_ids": [
+      12
+    ]
+  },
+  {
+    "category": "isbn",
+    "query": "9783150189337",
+    "relevant_ids": [
+      24
+    ]
+  },
+  {
+    "category": "isbn",
+    "query": "9783908497400",
+    "relevant_ids": [
+      12
+    ]
+  },
+  {
+    "category": "cross_language",
+    "query": "A prisoner survives isolation by studying chess",
+    "relevant_ids": [
+      24,
+      5986
+    ]
+  },
+  {
+    "category": "cross_language",
+    "query": "Мальчик учится в школе волшебства",
+    "relevant_ids": [
+      807,
+      808,
+      809,
+      810,
+      811,
+      812,
+      813,
+      814,
+      1032,
+      5331,
+      7636
+    ]
+  }
+]

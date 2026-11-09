@@ -1,0 +1,189 @@
+[
+  {
+    "category": "plot",
+    "query": "Ein Ingenieur begegnet auf Reisen einer jungen Frau und erkennt zu spät ihre familiäre Verbindung",
+    "relevant_ids": [
+      3365
+    ]
+  },
+  {
+    "category": "plot",
+    "query": "Eine unglückliche Ehe und die gesellschaftlichen Folgen einer Affäre im Preußen des neunzehnten Jahrhunderts",
+    "relevant_ids": [
+      6074,
+      7697,
+      7698,
+      7699,
+      7700,
+      7701,
+      7702,
+      7703,
+      7704,
+      7705,
+      7706,
+      7707,
+      7708,
+      7709,
+      7710,
+      7711,
+      7712,
+      7713,
+      7714,
+      7715,
+      7716,
+      7717,
+      7718,
+      7719,
+      7720,
+      7721,
+      7722,
+      7723,
+      7724,
+      7725,
+      7726,
+      7727,
+      7728,
+      7729,
+      7730,
+      7731,
+      7732
+    ]
+  },
+  {
+    "category": "plot",
+    "query": "Ein Außenseiter erlebt innere Zerrissenheit zwischen bürgerlichem Leben und seinen Trieben",
+    "relevant_ids": [
+      399,
+      6753
+    ]
+  },
+  {
+    "category": "plot",
+    "query": "Ein alter Kommissar ermittelt gegen einen schwer zu überführenden Verbrecher",
+    "relevant_ids": [
+      911,
+      1889
+    ]
+  },
+  {
+    "category": "plot",
+    "query": "Brüder geraten in einen Konflikt um Familie, Freiheit und eine Räuberbande",
+    "relevant_ids": [
+      784,
+      6272
+    ]
+  },
+  {
+    "category": "plot",
+    "query": "Eine Beziehung zwischen einem Jugendlichen und einer älteren Frau führt später zu einer Auseinandersetzung mit der NS-Vergangenheit",
+    "relevant_ids": [
+      436
+    ]
+  },
+  {
+    "category": "plot",
+    "query": "Ein Gelehrter schließt einen Pakt mit dem Teufel",
+    "relevant_ids": [
+      3456,
+      6081,
+      6083,
+      7805
+    ]
+  },
+  {
+    "category": "topic",
+    "query": "How do renewable energy sources help reduce carbon emissions?",
+    "relevant_ids": [
+      5906,
+      7085
+    ]
+  },
+  {
+    "category": "topic",
+    "query": "Suche ein Übungsbuch zu elektrischen Feldern und Gleichstromnetzwerken",
+    "relevant_ids": [
+      194,
+      2165,
+      5467,
+      5739,
+      6655,
+      6769
+    ]
+  },
+  {
+    "category": "topic",
+    "query": "Datenbankprogrammierung mit JDBC und Servlets",
+    "relevant_ids": [
+      1251
+    ]
+  },
+  {
+    "category": "topic",
+    "query": "Berechnung von Zahnrädern, Wellen und Lagern im Maschinenbau",
+    "relevant_ids": [
+      1138,
+      1201,
+      1927,
+      2028,
+      2029,
+      2030,
+      2031,
+      2032,
+      2034,
+      2035,
+      2038,
+      2039,
+      2040,
+      2041,
+      2070,
+      2144,
+      2145,
+      2932,
+      2933,
+      3372,
+      4702,
+      4703,
+      4704,
+      4705
+    ]
+  },
+  {
+    "category": "topic",
+    "query": "Vorbereitung auf die Sprachprüfung Cambridge Proficiency",
+    "relevant_ids": [
+      7800
+    ]
+  },
+  {
+    "category": "topic",
+    "query": "Technisches Zeichnen mit AutoCAD",
+    "relevant_ids": [
+      3977,
+      4266,
+      5374,
+      5677
+    ]
+  },
+  {
+    "category": "typo",
+    "query": "Homo fabber",
+    "relevant_ids": [
+      3365
+    ]
+  },
+  {
+    "category": "typo",
+    "query": "Stepenwolf",
+    "relevant_ids": [
+      399,
+      6753
+    ]
+  },
+  {
+    "category": "isbn",
+    "query": "9783518586013",
+    "relevant_ids": [
+      21
+    ]
+  }
+]

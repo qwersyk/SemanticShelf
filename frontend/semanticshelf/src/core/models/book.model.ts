@@ -10,4 +10,6 @@ export interface Book {
   isbn13: string | null;
   publisher: string | null;
   pages: number | null;
+  description_needs_review?: boolean | null;
+  description_basis?: string | null;
 }

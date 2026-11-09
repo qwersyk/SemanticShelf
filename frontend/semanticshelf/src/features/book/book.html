@@ -41,6 +41,14 @@
 
     <div class="my-6 sm:my-8 h-px bg-base-300"></div>
 
+    @if (book().description && !book().description_needs_review &&
+         (book().description_basis === 'source_backed' || book().description_basis === 'manual')) {
+      <section class="mb-8 text-left" aria-label="Buchbeschreibung">
+        <h2 class="mb-3 text-lg font-semibold">Über dieses Buch</h2>
+        <p class="whitespace-pre-line text-base leading-relaxed">{{ book().description }}</p>
+      </section>
+    }
+
     <div class="space-y-4 text-sm sm:text-base">
       <div class="flex flex-col gap-1 sm:flex-row sm:justify-between sm:gap-8">
         <span class="text-neutral-400">Erscheinungsjahr</span>

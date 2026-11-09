@@ -16,6 +16,12 @@ class BookDetail(BookSummary):
     isbn13: str | None = None
     publisher: str | None = None
     pages: int | None = None
+    description_version: int | None = None
+    description_basis: str | None = None
+    description_confidence: int | None = None
+    description_needs_review: bool | None = None
+    description_review_reason: str | None = None
+    description_sources: list[dict] | None = None
 
 
 class BookListResponse(BaseModel):
@@ -26,7 +32,7 @@ class BookListResponse(BaseModel):
 
 
 class RelevantRequest(BaseModel):
-    book_ids: list[int] = Field(min_length=0)
+    book_ids: list[int] = Field(min_length=0, max_length=100)
     offset: int = Field(default=0, ge=0)
     limit: int = Field(default=10, ge=1, le=50)
 
