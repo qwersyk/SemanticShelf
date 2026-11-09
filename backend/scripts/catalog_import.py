@@ -13,7 +13,9 @@ def import_catalog(path):
         with (path/name).open('rb') as f:checksum=hashlib.file_digest(f,'sha256').hexdigest()
         if checksum!=info['sha256']:raise ValueError('Checksum mismatch: '+name)
         if sum(1 for _ in (path/name).open())!=info['rows']:raise ValueError('Row count mismatch: '+name)
-    engine=create_engine(os.environ['DATABASE_URL'])
+    url=os.environ['DATABASE_URL']
+    if url.startswith('postgresql://'):url=url.replace('postgresql://','postgresql+psycopg2://',1)
+    engine=create_engine(url)
     with engine.begin() as c:
         c.exec_driver_sql((Path(__file__).parent.parent/'database/schema.sql').read_text())
         c.exec_driver_sql((Path(__file__).parent.parent/'database/migrations/001_openai_catalog.sql').read_text().replace('BEGIN;','').replace('COMMIT;',''))

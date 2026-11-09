@@ -32,7 +32,9 @@ class APIError(RuntimeError):pass
 
 class Catalog:
     def __init__(self, run_id, budget=14.0):
-        self.engine=create_engine(os.environ['DATABASE_URL'],pool_size=20,max_overflow=5,pool_pre_ping=True)
+        url=os.environ['DATABASE_URL']
+        if url.startswith('postgresql://'):url=url.replace('postgresql://','postgresql+psycopg2://',1)
+        self.engine=create_engine(url,pool_size=20,max_overflow=5,pool_pre_ping=True)
         self.run_id=run_id
         self.key=os.environ.get('OPENAI_API_KEY','').strip()
         self.budget=Decimal(str(budget))
