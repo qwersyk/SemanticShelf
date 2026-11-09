@@ -89,7 +89,7 @@ def get_relevant_books_for_history(book_ids,offset,limit):
         return get_random_books(offset,limit)
     with engine.connect() as c:
         rows=c.execute(text('''WITH source AS (
-          SELECT avg(d.embedding_vector) AS content,avg(d.metadata_vector) AS metadata
+          SELECT public.avg(d.embedding_vector) AS content,public.avg(d.metadata_vector) AS metadata
           FROM book_search_document d JOIN book_enrichment e ON e.book_id=d.book_id AND e.version_id=d.version_id
           WHERE d.book_id=ANY(:ids) AND d.model=:model
         ), candidates AS (

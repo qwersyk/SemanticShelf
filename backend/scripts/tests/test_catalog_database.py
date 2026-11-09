@@ -103,3 +103,14 @@ def test_preexisting_description_is_preserved_without_api(catalog,monkeypatch):
     book=catalog.books([bid])[0]
     assert book['manual_locked'] is True and book['basis']=='manual'
     assert 'bereits vorhandene' in book['description_de']
+
+def test_recommendations_use_vector_aggregate_with_restricted_search_path(catalog,monkeypatch):
+    from types import SimpleNamespace
+    from app.openai_catalog import get_relevant_books_for_history
+    def fake_call(endpoint,body,purpose,**kwargs):
+        return {'data':[{'index':i,'embedding':[0.1]*1536} for i in range(len(body['input']))]},None
+    monkeypatch.setattr(catalog,'call',fake_call)
+    catalog.embed(SimpleNamespace(ids=[24,25],embedding_model='text-embedding-3-large',limit=None,shards=1,shard_index=0))
+    results=get_relevant_books_for_history([24],0,5)
+    assert results and results[0]['id']==25
+    assert get_relevant_books_for_history([24,25],0,5)==[]
